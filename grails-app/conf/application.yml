@@ -81,6 +81,10 @@ grails:
                 scriptlets: html
                 taglib: none
                 staticparts: none
+    cors:
+        enabled: true
+    gorm:
+        autowire: true
 endpoints:
     jmx:
         unique-names: true
@@ -105,7 +109,7 @@ environments:
             jmxExport: true
             driverClassName: org.postgresql.Driver
             dialect: org.hibernate.dialect.PostgreSQL9Dialect
-            url: "jdbc:postgresql://192.168.1.110:5432/tdn"
+            url: "jdbc:postgresql://localhost:5432/tdn"
             username: tdn_developer
             password: tdndeveloper123
             dbCreate: create-drop

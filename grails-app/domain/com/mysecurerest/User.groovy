@@ -33,7 +33,7 @@ class User implements Serializable {
 	}
 
 	protected void encodePassword() {
-		password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
+		password = springSecurityService.encodePassword(password)
 	}
 
 	static transients = ['springSecurityService']
@@ -44,6 +44,7 @@ class User implements Serializable {
 	}
 
 	static mapping = {
+		table '`User`'
 		password column: '`password`'
 	}
 }
