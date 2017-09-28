@@ -38,6 +38,7 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 grails.plugin.springsecurity.rest.token.storage.useGorm = true // since using gorm for token storage
 grails.plugin.springsecurity.rest.token.generation.useSecureRandom = true
 grails.plugin.springsecurity.rest.login.active =true
+grails.plugin.springsecurity.rest.token.validation.headerName = 'X-Auth-Token'
 grails.plugin.springsecurity.rest.login.useJsonCredentials = true // can use json a request parameter
 grails.plugin.springsecurity.rest.login.usernamePropertyName = 'username' // field of username parameter
 grails.plugin.springsecurity.rest.login.passwordPropertyName = 'password' // field of pasword parameter
@@ -56,5 +57,7 @@ grails.plugin.springsecurity.rest.token.validation.active=true
 grails.plugin.springsecurity.rest.token.validation.endpointUrl='/api/validate'
 //end of rest configuration
 
-grails.gorm.autowire = true
+grails.gorm.default.mapping = {
+    autowire true
+}
 
