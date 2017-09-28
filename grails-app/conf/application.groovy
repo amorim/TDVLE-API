@@ -1,7 +1,7 @@
 // Added by the Spring Security Core plugin:
-grails.plugin.springsecurity.userLookup.userDomainClassName = 'com.mysecurerest.User'
-grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'com.mysecurerest.UserAuthority'
-grails.plugin.springsecurity.authority.className = 'com.mysecurerest.Authority'
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'com.tdnsecurerest.User'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'com.tdnsecurerest.UserAuthority'
+grails.plugin.springsecurity.authority.className = 'com.tdnsecurerest.Authority'
 grails.plugin.springsecurity.securityConfigType = "InterceptUrlMap"
 grails.plugin.springsecurity.interceptUrlMap = [
 		[pattern: '/',               access: ['permitAll']],
@@ -56,5 +56,7 @@ grails.plugin.springsecurity.rest.token.validation.active=true
 grails.plugin.springsecurity.rest.token.validation.endpointUrl='/api/validate'
 //end of rest configuration
 
-grails.gorm.autowire = true
+grails.gorm.default.mapping = {
+	autowire true
+}
 

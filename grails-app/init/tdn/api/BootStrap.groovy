@@ -1,8 +1,8 @@
 package tdn.api
 
-import com.mysecurerest.Authority
-import com.mysecurerest.User
-import com.mysecurerest.UserAuthority
+import com.tdnsecurerest.Authority
+import com.tdnsecurerest.User
+import com.tdnsecurerest.UserAuthority
 
 class BootStrap {
 
