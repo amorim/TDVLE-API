@@ -1,6 +1,6 @@
 package tdn.api
 
-import com.mysecurerest.User
+import com.tdnsecuredrest.User
 import grails.rest.RestfulController
 
 import javax.annotation.security.RolesAllowed

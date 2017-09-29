@@ -1,4 +1,4 @@
-package com.mysecurerest
+package com.tdnsecuredrest
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString

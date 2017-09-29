@@ -3,14 +3,14 @@ package tdn.api
 class UrlMappings {
 
     static mappings = {
-        "/$controller/$action?/$id?(.$format)?"{
+        "/$controller/$action?/$id?(.$format)?"{    
             constraints {
                 // apply constraints here
             }
         }
 
         '/api/user'(controller: 'user') {
-            action = [GET: 'index']
+            action = [GET: 'index', POST: 'save']
         }
 
         "/"(view:"/index")
