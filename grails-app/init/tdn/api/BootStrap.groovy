@@ -13,6 +13,7 @@ class BootStrap {
         //UserAuthority.create(user1,role1)
     }
     def destroy = {
+
     }
 
 }
