@@ -105,14 +105,9 @@ dataSource:
 environments:
     development:
         dataSource:
-            pooled: true
-            jmxExport: true
-            driverClassName: org.postgresql.Driver
-            dialect: org.hibernate.dialect.PostgreSQL9Dialect
-            url: "jdbc:postgresql://localhost:5432/tdn"
-            username: tdn_developer
-            password: tdndeveloper123
-            dbCreate: create-drop
+            dbCreate: update
+            url: jdbc:h2:./devDb;MVCC=TRUE;LOCK_TIMEOUT=10000
+
     test:
         dataSource:
             dbCreate: update

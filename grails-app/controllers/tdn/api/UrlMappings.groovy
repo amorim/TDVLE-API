@@ -10,7 +10,7 @@ class UrlMappings {
         }
 
         '/api/user'(controller: 'user') {
-            action = [GET: 'index']
+            action = [GET: 'index', POST: 'save']
         }
 
         "/"(view:"/index")

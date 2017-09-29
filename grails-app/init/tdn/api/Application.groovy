@@ -1,8 +1,5 @@
 package tdn.api
 
-import com.mysecurerest.Authority
-import com.mysecurerest.User
-import com.mysecurerest.UserAuthority
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
 
