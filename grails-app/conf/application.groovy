@@ -4,6 +4,7 @@ grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'com.tdnsecured
 grails.plugin.springsecurity.authority.className = 'com.tdnsecuredrest.Authority'
 grails.plugin.springsecurity.securityConfigType = "InterceptUrlMap"
 grails.plugin.springsecurity.interceptUrlMap = [
+		[pattern: '/api/register',   access: ['permitAll']],
 		[pattern: '/',               access: ['permitAll']],
 		[pattern: '/api/home/**',    access: ['ROLE_USER']],
 		[pattern: '/error',          access: ['permitAll']],
@@ -15,9 +16,10 @@ grails.plugin.springsecurity.interceptUrlMap = [
 		[pattern: '/**/css/**',      access: ['permitAll']],
 		[pattern: '/**/images/**',   access: ['permitAll']],
 		[pattern: '/**/favicon.ico', access: ['permitAll']],
-		[pattern:  '/login/**',      access:['IS_AUTHENTICATED_ANONYMOUSLY']],
+		[pattern:  '/login/**',      access: ['IS_AUTHENTICATED_ANONYMOUSLY']],
 		[pattern: '/**',             access: ['IS_AUTHENTICATED_FULLY']],
 		[pattern: '/api/**',         access: ['IS_AUTHENTICATED_FULLY']]
+
 ]
 
 grails.plugin.springsecurity.filterChain.chainMap = [

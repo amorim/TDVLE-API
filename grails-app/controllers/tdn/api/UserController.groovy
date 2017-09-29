@@ -2,6 +2,7 @@ package tdn.api
 
 import com.tdnsecuredrest.User
 import grails.rest.RestfulController
+import org.springframework.security.access.prepost.PostAuthorize
 
 import javax.annotation.security.RolesAllowed
 
@@ -13,4 +14,5 @@ class UserController extends RestfulController {
     UserController() {
         super(User)
     }
+
 }

@@ -13,6 +13,10 @@ class UrlMappings {
             action = [GET: 'index', POST: 'save']
         }
 
+        '/api/register'(controller: 'register') {
+            action = [POST: 'save']
+        }
+
         "/"(view:"/index")
         "500"(view:'/error')
         "404"(view:'/notFound')
