@@ -12,9 +12,9 @@ class RegisterController {
 
     def index() { }
 
+
     def save(User user) {
-        println ("Weeeee")
-        // def user1 = new User(username:"senpai",password:"nil").save flush:true
-        UserAuthority.create(user,Authority.get("ROLE_USER")).save()
+        user.save(flush:true, failOnError: true)
+        UserAuthority.create(user,  Authority.findByAuthority("ROLE_USER"))
     }
 }

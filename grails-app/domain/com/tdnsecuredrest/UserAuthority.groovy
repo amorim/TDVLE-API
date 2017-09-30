@@ -45,7 +45,7 @@ class UserAuthority implements Serializable {
 
 	static UserAuthority create(User user, Authority authority) {
 		def instance = new UserAuthority(user: user, authority: authority)
-		instance.save()
+		instance.save(flush: true)
 		instance
 	}
 
