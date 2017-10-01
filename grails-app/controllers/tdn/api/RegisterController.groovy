@@ -16,5 +16,6 @@ class RegisterController {
     def save(User user) {
         user.save(flush:true, failOnError: true)
         UserAuthority.create(user,  Authority.findByAuthority("ROLE_USER"))
+        render(status: 201, text: '')
     }
 }
