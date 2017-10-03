@@ -1,20 +1,22 @@
 package tdn.api
 
 import com.tdnsecuredrest.User
-import grails.converters.JSON
-import grails.rest.RestfulController
-import org.springframework.security.access.prepost.PostAuthorize
 
 import javax.annotation.security.RolesAllowed
 
 @RolesAllowed(["ROLE_USER"])
-class UserController {
+class PostController {
+
+    static allowedMethods = ["POST"]
 
     static responseFormats = ['json', 'xml']
     transient springSecurityService
     static transients = ['springSecurityService']
 
-    def show() {
-        respond User.get(springSecurityService.principal.id)
+    def index() { }
+
+    def save(Post post) {
+        post.user = User.get(springSecurityService.principal.id)
+        post.save(flush:true, failOnError: true)
     }
 }
