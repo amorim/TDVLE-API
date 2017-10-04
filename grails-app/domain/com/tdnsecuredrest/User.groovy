@@ -2,10 +2,13 @@ package com.tdnsecuredrest
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import tdn.api.Post
 
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
 class User implements Serializable {
+
+	static hasMany = [posts: Post]
 
 	private static final long serialVersionUID = 1
 

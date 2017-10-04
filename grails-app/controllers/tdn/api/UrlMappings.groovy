@@ -8,9 +8,14 @@ class UrlMappings {
             action = [GET: 'show']
         }
 
+        '/api/user/post'(controller: 'post') {
+            action = [POST: 'save']
+        }
+
         '/api/register'(controller: 'register') {
             action = [POST: 'save']
         }
+
 
         "/"(view:"/index")
         "500"(view:'/error')
