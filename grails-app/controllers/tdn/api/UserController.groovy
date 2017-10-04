@@ -17,5 +17,4 @@ class UserController {
     def show() {
         respond User.get(springSecurityService.principal.id)
     }
-
 }
