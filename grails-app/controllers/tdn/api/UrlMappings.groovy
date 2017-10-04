@@ -9,7 +9,7 @@ class UrlMappings {
         }
 
         '/api/user/post'(controller: 'post') {
-            action = [POST: 'save']
+            action = [POST: 'save', GET: 'index']
         }
 
         '/api/register'(controller: 'register') {
