@@ -9,10 +9,12 @@ class Post {
     String title
     String description
     String image
+    Date date
 
     static constraints = {
         title blank: false
         description blank: false
         image nullable: true
+        date nullable: false
     }
 }
