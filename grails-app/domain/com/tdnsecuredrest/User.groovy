@@ -8,7 +8,8 @@ import tdn.api.Post
 @ToString(includes='username', includeNames=true, includePackage=false)
 class User implements Serializable {
 
-	static hasMany = [posts: Post]
+	static hasMany = [posts: Post, followers: User]
+
 
 	private static final long serialVersionUID = 1
 
@@ -42,7 +43,7 @@ class User implements Serializable {
 	}
 
 	protected void encodePassword() {
-		password = springSecurityService.encodePassword(password)
+		password = springSecurityService ? springSecurityService.encodePassword(password) : password
 	}
 
 	static transients = ['springSecurityService']

@@ -16,6 +16,10 @@ class UrlMappings {
             action = [POST: 'save']
         }
 
+        '/api/users/$id/followers'(controller: 'followers') {
+            action = [POST: 'save', GET: 'index']
+        }
+
 
         "/"(view:"/index")
         "500"(view:'/error')
