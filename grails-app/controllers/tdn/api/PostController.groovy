@@ -18,7 +18,7 @@ class PostController {
     }
 
     def save(Post post) {
-        post.user = User.get(id: springSecurityService.principal.id)
+        post.user = User.get(springSecurityService.principal.id)
         post.date = new Date()
         post.save(flush:true, failOnError: true)
         render(status: 201, post as JSON)
