@@ -12,4 +12,8 @@ class UsersController {
     def index() {
         render User.all as JSON
     }
+
+    def page(Long max, Long offset) {
+        render User.all[offset..(offset + max - 1)] as JSON
+    }
 }
