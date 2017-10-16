@@ -17,10 +17,7 @@ class NotificationController {
     }
 
     def count() {
-        render(contentType: 'application/json') {
-            unreadNotifications {
-                Notification.countByDestUserAndRead(User.get(springSecurityService.principal.id), false)
-            }
-        }
+        def count = Notification.countByDestUserAndRead(User.get(springSecurityService.principal.id), false)
+        render count as JSON
     }
 }

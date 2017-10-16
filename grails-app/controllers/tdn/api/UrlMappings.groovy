@@ -29,8 +29,8 @@ class UrlMappings {
                 "/"(controller: 'users') {
                     action = [GET: 'index']
                 }
-                "/max=$max&offset=$offset"(controller: 'users') {
-                    action = [GET: 'page']
+                "/count"(controller: 'users') {
+                    action = [GET: 'count']
                 }
                 "/$id/followers"(controller: 'followers') {
                     action = [POST: 'save', DELETE: 'delete', GET: 'index']
