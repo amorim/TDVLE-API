@@ -23,6 +23,13 @@ class FollowersController {
         render u.followers as JSON
     }
 
+    def delete(Long id) {
+        User u = User.get(id)
+        u.followers.remove(User.get(springSecurityService.principal.id))
+        u.save(flush: true, failOnError: true)
+        render u.followers as JSON
+    }
+
     def following(Long id) {
         render User.executeQuery("from User as u where :user in elements(u.followers)", [user: User.get(id)]) as JSON
     }
