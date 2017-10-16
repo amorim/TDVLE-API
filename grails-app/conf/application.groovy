@@ -1,3 +1,5 @@
+grails.converters.json.default.deep = true
+
 grails.plugin.springsecurity.userLookup.userDomainClassName = 'com.tdnsecuredrest.User'
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'com.tdnsecuredrest.UserAuthority'
 grails.plugin.springsecurity.authority.className = 'com.tdnsecuredrest.Authority'

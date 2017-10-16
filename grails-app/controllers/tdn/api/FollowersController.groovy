@@ -25,7 +25,7 @@ class FollowersController {
 
     def delete(Long id) {
         User u = User.get(id)
-        u.followers.remove(User.get(springSecurityService.principal.id))
+        u.removeFromFollowers(User.get(springSecurityService.principal.id))
         u.save(flush: true, failOnError: true)
         render u.followers as JSON
     }

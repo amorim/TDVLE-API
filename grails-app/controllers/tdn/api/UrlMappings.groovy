@@ -16,6 +16,15 @@ class UrlMappings {
                 action = [POST: 'save']
             }
 
+            group "/notifications", {
+                "/"(controller: 'notification') {
+                    action = [GET: 'index']
+                }
+                "/count"(controller: 'notification') {
+                    action = [GET: 'count']
+                }
+            }
+
             group "/users", {
                 "/"(controller: 'users') {
                     action = [GET: 'index']
