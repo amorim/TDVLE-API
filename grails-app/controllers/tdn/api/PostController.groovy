@@ -32,9 +32,9 @@ class PostController {
         post.date = new Date()
         post.save(flush:true, failOnError: true)
         post.user.followers.each {
-            Notification u = new Notification(message: notifMessage, date: post.date,
+            Notification n = new Notification(message: notifMessage, date: post.date,
                     read: false, destUser: it, fromUser: post.user)
-            u.save(failOnError: true)
+            n.save(failOnError: true)
         }
         render(status: 201, post as JSON)
     }

@@ -23,6 +23,9 @@ class UrlMappings {
                 "/count"(controller: 'notification') {
                     action = [GET: 'count']
                 }
+                "/read"(controller: 'notification') {
+                    action = [POST: 'read']
+                }
             }
 
             group "/users", {
@@ -40,6 +43,9 @@ class UrlMappings {
                 }
                 "/$id/followers"(controller: 'followers') {
                     action = [POST: 'save', DELETE: 'delete', GET: 'index']
+                }
+                "/follower/count"(controller: 'followers') {
+                    action = [GET: 'followerCount']
                 }
                 "/$id/following"(controller: 'followers') {
                     action = [GET: 'following']

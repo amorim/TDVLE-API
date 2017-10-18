@@ -12,8 +12,13 @@ class FollowersController {
     transient springSecurityService
     static transients = ['springSecurityService']
 
-    def index(Long id) {
+    def index(Long id, Long offset, Long max) {
         render User.get(id).followers as JSON
+    }
+
+    def followerCount() {
+        def followerCount = [followerCount: User.get(springSecurityService.principal.id).followers.size()]
+        render followerCount as JSON
     }
 
     def save(Long id) {
@@ -30,7 +35,7 @@ class FollowersController {
         render u.followers as JSON
     }
 
-    def following(Long id) {
-        render User.executeQuery("from User as u where :user in elements(u.followers)", [user: User.get(id)]) as JSON
+    def following(Long id, Long offset, Long max) {
+        render User.executeQuery("from User as u where :user in elements(u.followers)", [user: User.get(id)], [offset: offset, max: max]) as JSON
     }
 }
