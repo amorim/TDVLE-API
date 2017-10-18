@@ -5446,3 +5446,15 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_B7CCFD3C_7469_44EE_8FEB_DDC48B5DE3AA STAR
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.lang.Thread.run(Thread.java:748)
+2017-10-17 21:16:23 jdbc[12]: exception
+org.h2.jdbc.JdbcSQLException: Table "NOTIFICATION" not found; SQL statement:
+select notificati0_.from_user_id as from_use3_2_0_, notificati0_.id as id1_2_0_, notificati0_.id as id1_2_1_, notificati0_.version as version2_2_1_, notificati0_.from_user_id as from_use3_2_1_, notificati0_.message as message4_2_1_, notificati0_.date as date5_2_1_, notificati0_.dest_user_id as dest_use6_2_1_, notificati0_.read as read7_2_1_ from notification notificati0_ where notificati0_.from_user_id=? [42102-195]
+2017-10-17 21:17:16 jdbc[12]: exception
+org.h2.jdbc.JdbcSQLException: Table "NOTIFICATION" not found; SQL statement:
+select notificati0_.from_user_id as from_use3_2_0_, notificati0_.id as id1_2_0_, notificati0_.id as id1_2_1_, notificati0_.version as version2_2_1_, notificati0_.from_user_id as from_use3_2_1_, notificati0_.message as message4_2_1_, notificati0_.date as date5_2_1_, notificati0_.dest_user_id as dest_use6_2_1_, notificati0_.read as read7_2_1_ from notification notificati0_ where notificati0_.from_user_id=? [42102-195]
+2017-10-17 21:25:54 jdbc[12]: exception
+org.h2.jdbc.JdbcSQLException: Table "NOTIFICATION" not found; SQL statement:
+select notificati0_.from_user_id as from_use3_2_0_, notificati0_.id as id1_2_0_, notificati0_.id as id1_2_1_, notificati0_.version as version2_2_1_, notificati0_.from_user_id as from_use3_2_1_, notificati0_.message as message4_2_1_, notificati0_.date as date5_2_1_, notificati0_.dest_user_id as dest_use6_2_1_, notificati0_.read as read7_2_1_ from notification notificati0_ where notificati0_.from_user_id=? [42102-195]
+2017-10-17 21:52:34 jdbc[11]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT POST0_.ID AS ID1_3_, POST0_.VERSION AS VERSION2_3_, POST0_.TITLE AS TITLE3_3_, POST0_.DATE AS DATE4_3_, POST0_.IMAGE AS IMAGE5_3_, POST0_.USER_ID AS USER_ID6_3_, POST0_.DESCRIPTION AS DESCRIPT7_3_ FROM POST POST0_ WHERE POST0_.USER_ID IN ((SELECT USER1_.ID FROM ""User"" USER1_ WHERE ? IN (SELECT FOLLOWERS2_.USER_ID FROM USER_USER FOLLOWERS2_ WHERE USER1_.ID=FOLLOWERS2_.USER_FOLLOWERS_ID))+[*]?) ORDER BY POST0_.DATE "; expected "UNION, MINUS, EXCEPT, INTERSECT, ORDER, OFFSET, FETCH, LIMIT, FOR, )"; SQL statement:
+select post0_.id as id1_3_, post0_.version as version2_3_, post0_.title as title3_3_, post0_.date as date4_3_, post0_.image as image5_3_, post0_.user_id as user_id6_3_, post0_.description as descript7_3_ from post post0_ where post0_.user_id in ((select user1_.id from "User" user1_ where ? in (select followers2_.user_id from user_user followers2_ where user1_.id=followers2_.user_followers_id))+?) order by post0_.date [42001-195]

@@ -14,7 +14,17 @@ class PostController {
     static transients = ['springSecurityService']
 
     def index() {
-        respond Post.listOrderByDate(order: "desc")
+        render Post.findAll("from Post as p where p.user = ? order by p.date desc", [User.get(springSecurityService.principal.id)]) as JSON
+    }
+
+    def posts(Long offset, Long max) {
+        println offset + " " + max
+        render Post.findAll("from Post as p where p.user.id in (select u.id from User as u where :user in elements(u.followers)) or p.user = :user order by p.date desc", [user: User.get(springSecurityService.principal.id)], [offset: offset, max: max]) as JSON
+    }
+
+    def count() {
+        def count = [postCount: Post.findAll("from Post as p where p.user.id in (select u.id from User as u where :user in elements(u.followers)) or p.user = :user order by p.date desc", [user: User.get(springSecurityService.principal.id)]).size()]
+        render count as JSON
     }
 
     def save(Post post) {
