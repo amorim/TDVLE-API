@@ -11,7 +11,6 @@ class User implements Serializable {
 
 	static hasMany = [posts: Post, followers: User, notifications: Notification]
 
-
 	private static final long serialVersionUID = 1
 
 	transient springSecurityService
