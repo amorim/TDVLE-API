@@ -14,7 +14,7 @@ class NotificationController {
     def index() {
         println "API prepared a notification" + Notification.findAll("from Notification as n where n.destUser = ? order by n.date",
                 [User.get(springSecurityService.principal.id)])
-        render Notification.findAll("from Notification as n where n.destUser = ? order by n.date",
+        render Notification.findAll("from Notification as n where n.destUser = ? order by n.date desc",
                 [User.get(springSecurityService.principal.id)]) as JSON
     }
 
