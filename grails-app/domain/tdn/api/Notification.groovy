@@ -11,5 +11,6 @@ class Notification {
     Date date
 
     static constraints = {
+
     }
 }
