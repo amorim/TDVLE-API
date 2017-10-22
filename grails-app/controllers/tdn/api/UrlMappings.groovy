@@ -51,6 +51,12 @@ class UrlMappings {
                     action = [GET: 'following']
                 }
             }
+
+            group "/posts", {
+                "/like"(controller: 'post') {
+                    action = [PUT: 'like']
+                }
+            }
         }
 
 

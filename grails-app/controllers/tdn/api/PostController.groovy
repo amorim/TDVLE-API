@@ -2,6 +2,7 @@ package tdn.api
 
 import com.tdnsecuredrest.User
 import grails.converters.JSON
+import org.joda.time.DateTimeZone
 
 import javax.annotation.security.RolesAllowed
 
@@ -36,6 +37,21 @@ class PostController {
                     read: false, destUser: it, fromUser: post.user)
             n.save(failOnError: true)
         }
+        println post.date
         render(status: 201, post as JSON)
+    }
+
+    def like(Post post) {
+        if (Like.countByUserAndPost(User.get(springSecurityService.principal.id), post) == 0) {
+            println "Like"
+            Like l = new Like(post: post, user: User.get(springSecurityService.principal.id))
+            post.addToLikes(l)
+        } else {
+            println "Dislike"
+            post.removeFromLikes(Like.findByUserAndPost(User.get(springSecurityService.principal.id), post))
+            Like.findByUserAndPost(User.get(springSecurityService.principal.id), post).delete(flush: true)
+        }
+        post.save(flush: true, failOnError: true)
+        render(status: 200, post as JSON)
     }
 }
