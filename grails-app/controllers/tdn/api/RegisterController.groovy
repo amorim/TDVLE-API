@@ -4,6 +4,7 @@ import com.tdnsecuredrest.Authority
 import com.tdnsecuredrest.User
 import com.tdnsecuredrest.UserAuthority
 import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
 
 class RegisterController {
 

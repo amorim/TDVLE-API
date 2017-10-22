@@ -2,10 +2,8 @@ package tdn.api
 
 import com.tdnsecuredrest.User
 import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
 
-import javax.annotation.security.RolesAllowed
-
-@RolesAllowed(['ROLE_USER'])
 class NotificationController {
 
     transient springSecurityService

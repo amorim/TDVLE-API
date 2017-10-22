@@ -2,11 +2,11 @@ package tdn.api
 
 import com.tdnsecuredrest.User
 import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
 
 import javax.annotation.security.RolesAllowed
 
 
-@RolesAllowed(["ROLE_USER"])
 class FollowersController {
 
     transient springSecurityService
@@ -36,6 +36,7 @@ class FollowersController {
     }
 
     def following(Long id, Long offset, Long max) {
-        render User.executeQuery("from User as u where :user in elements(u.followers)", [user: User.get(id)], [offset: offset, max: max]) as JSON
+        List user = User.executeQuery("from User as u where :user in elements(u.followers)", [user: User.get(id)], [offset: offset, max: max])
+
     }
 }

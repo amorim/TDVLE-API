@@ -2,6 +2,10 @@ package tdn.api
 
 import com.tdnsecuredrest.User
 import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
+import org.grails.web.json.JSONArray
+
+import javax.annotation.security.RolesAllowed
 
 class UsersController {
 
@@ -10,8 +14,16 @@ class UsersController {
     static transients = ['springSecurityService']
 
     def index(Long offset, Long max) {
-        println offset + " " +  max
-        render User.list(offset: offset, max: max) as JSON
+        List<User> list =  User.list(offset: offset, max: max)
+        JSONArray arr = new JSONArray()
+        List<User> following = User.executeQuery("from User as u where :user in elements(u.followers)",
+                [user: User.get(springSecurityService.principal.id)])
+        list.forEach {
+            u -> def json = JSON.parse((u as JSON).toString())
+                json.put("isFollowing", following.contains(u))
+                arr.put(json);
+        }
+        render arr as JSON
     }
 
     def count() {
