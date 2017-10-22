@@ -57,5 +57,6 @@ class UrlMappings {
         "/"(view: "/index")
         "500"(view: '/error')
         "404"(view: '/notFound')
+        "401"(view: '/unauthorized')
     }
 }
