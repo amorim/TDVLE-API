@@ -10,7 +10,6 @@ class UsersController {
     static transients = ['springSecurityService']
 
     def index(Long offset, Long max) {
-        println offset + " " +  max
         render User.list(offset: offset, max: max) as JSON
     }
 

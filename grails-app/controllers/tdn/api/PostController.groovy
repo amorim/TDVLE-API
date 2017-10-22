@@ -19,8 +19,11 @@ class PostController {
     }
 
     def posts(Long offset, Long max) {
-        println offset + " " + max
         render Post.findAll("from Post as p where p.user.id in (select u.id from User as u where :user in elements(u.followers)) or p.user = :user order by p.date desc", [user: User.get(springSecurityService.principal.id)], [offset: offset, max: max]) as JSON
+    }
+
+    def post(Long id) {
+        render Post.get(id) as JSON
     }
 
     def count() {

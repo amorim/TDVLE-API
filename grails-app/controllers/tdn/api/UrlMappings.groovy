@@ -56,6 +56,9 @@ class UrlMappings {
                 "/like"(controller: 'post') {
                     action = [PUT: 'like']
                 }
+                "/$id"(controller: 'post') {
+                    action = [GET: 'post']
+                }
             }
         }
 
