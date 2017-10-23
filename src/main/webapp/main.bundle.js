@@ -1342,7 +1342,7 @@ var Constants = (function () {
     return Constants;
 }());
 
-Constants.url = 'http://localhost:8080/api';
+Constants.url = 'https://the-dank-network.herokuapp.com/api';
 //# sourceMappingURL=constants.js.map
 
 /***/ }),
