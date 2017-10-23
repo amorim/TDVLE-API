@@ -2,7 +2,6 @@ package tdn.api
 
 import com.tdnsecuredrest.User
 import grails.converters.JSON
-import grails.plugin.springsecurity.annotation.Secured
 
 class NotificationController {
 
@@ -13,7 +12,7 @@ class NotificationController {
         println "API prepared a notification" + Notification.findAll("from Notification as n where n.destUser = ? order by n.date",
                 [User.get(springSecurityService.principal.id)])
         render Notification.findAll("from Notification as n where n.destUser = ? order by n.date desc",
-                [User.get(springSecurityService.principal.id)], [max: 10]) as JSON
+                [User.get(springSecurityService.principal.id)]) as JSON
     }
 
     def count() {
@@ -24,5 +23,10 @@ class NotificationController {
     def read() {
         Notification.executeUpdate("update Notification n set n.read = true where n.destUser = :user", [user: User.get(springSecurityService.principal.id)])
         render(status:200, [] as JSON)
+    }
+
+    def delete(Long id) {
+        Notification.get(id).delete(flush: true)
+        render status: 204
     }
 }

@@ -26,6 +26,9 @@ class UrlMappings {
                 "/read"(controller: 'notification') {
                     action = [POST: 'read']
                 }
+                "/$id"(controller: 'notification') {
+                    action = [DELETE: 'delete']
+                }
             }
 
             group "/users", {
@@ -49,6 +52,18 @@ class UrlMappings {
                 }
                 "/$id/following"(controller: 'followers') {
                     action = [GET: 'following']
+                }
+            }
+
+            group "/apps", {
+                "/"(controller: 'app') {
+                    action = [GET: 'getVisibleApps', POST: 'requestIntegration']
+                }
+                "/all"(controller: 'app') {
+                    action = [GET: 'getAllApps']
+                }
+                "/$id/approve"(controller: 'app') {
+                    action = [POST: 'approveRequest']
                 }
             }
         }

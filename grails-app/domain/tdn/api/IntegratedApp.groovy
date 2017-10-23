@@ -13,5 +13,10 @@ class IntegratedApp {
     static belongsTo = [owner: User]
 
     static constraints = {
+        name blank: false
+        image blank: false
+        description blank: false
+        uri blank: false
+        approved defaultValue: "false"
     }
 }

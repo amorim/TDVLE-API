@@ -37,6 +37,6 @@ class FollowersController {
 
     def following(Long id, Long offset, Long max) {
         List user = User.executeQuery("from User as u where :user in elements(u.followers)", [user: User.get(id)], [offset: offset, max: max])
-
+        render user as JSON
     }
 }
