@@ -11,6 +11,11 @@ grails:
             # Whether to translate GORM events into Reactor events
             # Disabled by default for performance reasons
             events: false
+    databinding:
+        dateFormats:
+            - "yyyy-MM-dd'T'hh:mm:ss.S'Z'"
+            - "yyyy-MM-dd'T'HH:mm:ss'Z'"
+            - "yyyy-MM-dd'T'HH:mm:ss.SSSX"
 info:
     app:
         name: '@info.app.name@'
@@ -66,6 +71,8 @@ grails:
     urlmapping:
         cache:
             maxsize: 1000
+    resources:
+            pattern: '/**'
     controllers:
         defaultScope: singleton
     converters:
