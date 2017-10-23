@@ -468,6 +468,7 @@ AuthModule = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ngx_cookie_service__ = __webpack_require__("../../../../ngx-cookie-service/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared_constants__ = __webpack_require__("../../../../../src/app/shared/constants.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -480,6 +481,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var AuthService = (function () {
     function AuthService(http, cookieService) {
         this.http = http;
@@ -488,7 +490,7 @@ var AuthService = (function () {
     AuthService.prototype.login = function (user, callback) {
         var _this = this;
         this.http
-            .post('http://localhost:8080/api/login', user)
+            .post(__WEBPACK_IMPORTED_MODULE_3__shared_constants__["a" /* Constants */].url + '/login', user)
             .map(function (res) { return res.json(); })
             .subscribe(function (data) {
             _this.cookieService.set('access-token', data['access_token']);
@@ -1280,6 +1282,7 @@ module.exports = "<br>\r\n<div>\r\n  <mat-card class=\"register-form\">\r\n    <
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_user_model__ = __webpack_require__("../../../../../src/app/model/user.model.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_material__ = __webpack_require__("../../../material/esm5/material.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared_constants__ = __webpack_require__("../../../../../src/app/shared/constants.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1289,6 +1292,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -1303,7 +1307,7 @@ var RegisterComponent = (function () {
     RegisterComponent.prototype.register = function () {
         console.log(this.userRegister);
         this.http
-            .post('http://localhost:8080/api/register', this.userRegister)
+            .post(__WEBPACK_IMPORTED_MODULE_4__shared_constants__["a" /* Constants */].url + '/register', this.userRegister)
             .subscribe(function (data) {
             console.log(data);
         });
