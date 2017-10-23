@@ -4,12 +4,19 @@ class UrlMappings {
 
     static mappings = {
         group "/api", {
-            '/user'(controller: 'user') {
-                action = [GET: 'show']
-            }
 
-            '/user/post'(controller: 'post') {
-                action = [POST: 'save', GET: 'index']
+            group "/user", {
+                '/'(controller: 'user') {
+                    action = [GET: 'show']
+                }
+
+                '/post'(controller: 'post') {
+                    action = [POST: 'save', GET: 'index']
+                }
+
+                '/followers'(controller: 'followers') {
+                    action = [GET: 'index']
+                }
             }
 
             '/register'(controller: 'register') {
@@ -39,7 +46,7 @@ class UrlMappings {
                     action = [GET: 'count']
                 }
                 "/$id/followers"(controller: 'followers') {
-                    action = [POST: 'save', DELETE: 'delete', GET: 'index']
+                    action = [POST: 'save', DELETE: 'delete']
                 }
                 "/follower/count"(controller: 'followers') {
                     action = [GET: 'followerCount']

@@ -3,6 +3,7 @@ package tdn.api
 import com.tdnsecuredrest.User
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
+import org.grails.web.json.JSONArray
 
 import javax.annotation.security.RolesAllowed
 
@@ -12,8 +13,18 @@ class FollowersController {
     transient springSecurityService
     static transients = ['springSecurityService']
 
-    def index(Long id, Long offset, Long max) {
-        render User.get(id).followers as JSON
+    def index(Long offset, Long max) {
+        List users = User.executeQuery("select u.followers from User u where u.id = ?",
+                [springSecurityService.principal.id], [max: max, offset: offset])
+        List<User> following = User.executeQuery("from User as u where :user in elements(u.followers)",
+                [user: User.get(springSecurityService.principal.id)])
+        JSONArray arr = new JSONArray();
+        users.forEach {
+            u -> def json = JSON.parse((u as JSON).toString())
+                json.put("isFollowing", following.contains(u))
+                arr.put(json)
+        }
+        render arr as JSON
     }
 
     def followerCount() {
@@ -33,6 +44,10 @@ class FollowersController {
         u.removeFromFollowers(User.get(springSecurityService.principal.id))
         u.save(flush: true, failOnError: true)
         render u.followers as JSON
+    }
+
+    def getFollowing() {
+
     }
 
     def following(Long id, Long offset, Long max) {
