@@ -19,6 +19,10 @@ class UrlMappings {
                 }
             }
 
+            "/profile/$id"(controller: 'user') {
+                action = [GET: 'user']
+            }
+
             '/register'(controller: 'register') {
                 action = [POST: 'save']
             }
@@ -48,11 +52,14 @@ class UrlMappings {
                 "/$id/followers"(controller: 'followers') {
                     action = [POST: 'save', DELETE: 'delete']
                 }
-                "/follower/count"(controller: 'followers') {
+                "/$id/follower/count"(controller: 'followers') {
                     action = [GET: 'followerCount']
                 }
                 "/$id/following"(controller: 'followers') {
                     action = [GET: 'following']
+                }
+                "$id/following/count"(controller: 'followers') {
+                    action = [GET: 'followingCount']
                 }
             }
 
