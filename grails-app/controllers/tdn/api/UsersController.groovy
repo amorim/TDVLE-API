@@ -9,7 +9,12 @@ class UsersController {
     transient springSecurityService
     static transients = ['springSecurityService']
 
-    def index() {
-        render User.all as JSON
+    def index(Long offset, Long max) {
+        render User.list(offset: offset, max: max) as JSON
+    }
+
+    def count() {
+        def count = [userCount: User.count]
+        render count as JSON
     }
 }

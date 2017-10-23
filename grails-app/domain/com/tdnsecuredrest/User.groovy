@@ -2,13 +2,14 @@ package com.tdnsecuredrest
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import tdn.api.Notification
 import tdn.api.Post
 
 @EqualsAndHashCode(includes='username')
 @ToString(includes='username', includeNames=true, includePackage=false)
 class User implements Serializable {
 
-	static hasMany = [posts: Post, followers: User]
+	static hasMany = [posts: Post, followers: User, notifications: Notification]
 
 
 	private static final long serialVersionUID = 1
