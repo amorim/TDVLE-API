@@ -85,7 +85,7 @@ class UrlMappings {
         }
 
 
-        "/"(view: "/index")
+        "/"(uri: "/index.html")
         "500"(view: '/error')
         "404"(view: '/notFound')
         "401"(view: '/unauthorized')
