@@ -35,12 +35,6 @@ class UrlMappings {
                 "/count"(controller: 'users') {
                     action = [GET: 'count']
                 }
-                "/posts"(controller: 'post') {
-                    action = [GET: 'posts']
-                }
-                "/posts/count"(controller: 'post') {
-                    action = [GET: 'count']
-                }
                 "/$id/followers"(controller: 'followers') {
                     action = [POST: 'save', DELETE: 'delete', GET: 'index']
                 }
@@ -53,8 +47,14 @@ class UrlMappings {
             }
 
             group "/posts", {
+                "/"(controller: 'post') {
+                    action = [GET: 'posts']
+                }
+                "/count"(controller: 'post') {
+                    action = [GET: 'count']
+                }
                 "/like"(controller: 'post') {
-                    action = [PUT: 'like']
+                    action = [POST: 'like']
                 }
                 "/$id"(controller: 'post') {
                     action = [GET: 'post']
