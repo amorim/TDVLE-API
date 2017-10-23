@@ -2,13 +2,14 @@ package tdn.api
 
 import com.tdnsecuredrest.User
 import grails.converters.JSON
-import grails.plugin.springsecurity.annotation.Secured
+import org.grails.web.json.JSONArray
+import org.joda.time.DateTimeZone
 
 import javax.annotation.security.RolesAllowed
 
 class PostController {
 
-    static notifMessage = 'Posted new content'
+//    static notifMessage =
     static responseFormats = ['json', 'xml']
     transient springSecurityService
     static transients = ['springSecurityService']
@@ -17,25 +18,66 @@ class PostController {
         render Post.findAll("from Post as p where p.user = ? order by p.date desc", [User.get(springSecurityService.principal.id)]) as JSON
     }
 
-    def posts(Long offset, Long max) {
-        println offset + " " + max
-        render Post.findAll("from Post as p where p.user.id in (select u.id from User as u where :user in elements(u.followers)) or p.user = :user order by p.date desc", [user: User.get(springSecurityService.principal.id)], [offset: offset, max: max]) as JSON
-    }
-
     def count() {
         def count = [postCount: Post.findAll("from Post as p where p.user.id in (select u.id from User as u where :user in elements(u.followers)) or p.user = :user order by p.date desc", [user: User.get(springSecurityService.principal.id)]).size()]
         render count as JSON
     }
 
+    def post(Long id) {
+        JSONArray arr = postListToJSONArray([Post.get(id)].toList())
+        render arr[0] as JSON
+    }
+
+    def posts(Long offset, Long max) {
+        List<Post> list = Post.findAll("from Post as p where p.user.id in (select u.id from User as u where :user in elements(u.followers)) or p.user = :user order by p.date desc", [user: User.get(springSecurityService.principal.id)], [offset: offset, max: max])
+        JSONArray arr = postListToJSONArray(list)
+        render arr as JSON
+    }
+
     def save(Post post) {
         post.user = User.get(springSecurityService.principal.id)
         post.date = new Date()
+        post.likes = []
         post.save(flush:true, failOnError: true)
-        post.user.followers.each {
-            Notification n = new Notification(message: notifMessage, date: post.date,
-                    read: false, destUser: it, fromUser: post.user)
+        sendNotifications(post.user, post.user.followers.toList(), 'Posted new content', post.date)
+        JSONArray arr = postListToJSONArray([post].toList())
+        render(status: 201, arr[0] as JSON)
+    }
+
+    def like(Like likeObj) {
+        User au = User.get(springSecurityService.principal.id)
+        likeObj.user = au
+        Post post = Post.get(likeObj.post.id)
+
+        if (Like.countByUserAndPost(au, post) >= 1) {
+            Like.findByUserAndPost(au, post).delete(flush: true)
+        } else {
+            likeObj.save(flush: true, failOnError: true)
+            sendNotifications(au, au.followers.toList(), 'Liked your post', new Date())
+        }
+
+        JSONArray arr = postListToJSONArray([post].toList())
+        render(status: 200, arr[0] as JSON)
+    }
+
+    JSONArray postListToJSONArray(List<Post> list) {
+        User au = User.get(springSecurityService.principal.id)
+        JSONArray arr = new JSONArray()
+        list.forEach {
+            p -> def json = JSON.parse((p as JSON).toString())
+                json.put("hasLiked", p.likes.collect(){item -> (item.user.id == au.id)}.contains(true))
+                json.put("likeCount", p.likes.size())
+                json.remove("likes")
+                arr.put(json)
+        }
+        return(arr)
+    }
+
+    void sendNotifications(User from, List<User> list, String notifMessage, Date date) {
+        list.each {
+            Notification n = new Notification(message: notifMessage, date: date,
+                    read: false, destUser: it, fromUser: from)
             n.save(failOnError: true)
         }
-        render(status: 201, post as JSON)
     }
 }

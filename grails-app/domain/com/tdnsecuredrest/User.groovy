@@ -2,6 +2,7 @@ package com.tdnsecuredrest
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import tdn.api.Like
 import tdn.api.IntegratedApp
 import tdn.api.Notification
 import tdn.api.Post
@@ -10,7 +11,7 @@ import tdn.api.Post
 @ToString(includes='username', includeNames=true, includePackage=false)
 class User implements Serializable {
 
-	static hasMany = [posts: Post, followers: User, notifications: Notification, integratedApps: IntegratedApp]
+	static hasMany = [posts: Post, followers: User, notifications: Notification, integratedApps: IntegratedApp, likes: Like]
 
 	private static final long serialVersionUID = 1
 

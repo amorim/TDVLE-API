@@ -5,6 +5,7 @@ import com.tdnsecuredrest.User
 class Post {
 
     static belongsTo = [user: User]
+    static hasMany = [likes: Like]
 
     String description
     String image
