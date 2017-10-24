@@ -58,7 +58,7 @@ class UrlMappings {
                 "/$id/following"(controller: 'followers') {
                     action = [GET: 'following']
                 }
-                "$id/following/count"(controller: 'followers') {
+                "/$id/following/count"(controller: 'followers') {
                     action = [GET: 'followingCount']
                 }
             }
