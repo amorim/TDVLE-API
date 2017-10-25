@@ -24,10 +24,15 @@ class UserController {
     }
 
     def show() {
-        respond getUser(User.get(springSecurityService.principal.id))
+        respond User.get(springSecurityService.principal.id)
     }
 
     def user(Long id) {
         respond getUser(User.get(id))
+    }
+
+    def update(User user) {
+        user.save(flush: true, failOnError: true)
+        respond status: 204
     }
 }

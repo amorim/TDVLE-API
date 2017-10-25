@@ -7,7 +7,7 @@ class UrlMappings {
 
             group "/user", {
                 '/'(controller: 'user') {
-                    action = [GET: 'show']
+                    action = [GET: 'show', PUT: 'update']
                 }
 
                 '/post'(controller: 'post') {
@@ -17,6 +17,10 @@ class UrlMappings {
                 '/followers'(controller: 'followers') {
                     action = [GET: 'index']
                 }
+            }
+
+            "/post/$id"(controller: 'post') {
+                action = [GET: 'post']
             }
 
             "/profile/$id"(controller: 'user') {
@@ -88,6 +92,22 @@ class UrlMappings {
                 "/$id"(controller: 'post') {
                     action = [GET: 'post']
                 }
+            }
+
+            group "/apps", {
+                "/"(controller: 'app') {
+                    action = [GET: 'getVisibleApps', POST: 'requestIntegration']
+                }
+                "/all"(controller: 'app') {
+                    action = [GET: 'getAllApps']
+                }
+                "/$id/approve"(controller: 'app') {
+                    action = [POST: 'approveRequest']
+                }
+                "/count"(controller: 'app') {
+                    action = [GET: 'count']
+                }
+
             }
         }
 
