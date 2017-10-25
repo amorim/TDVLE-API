@@ -82,6 +82,22 @@ class UrlMappings {
                     action = [GET: 'post']
                 }
             }
+
+            group "/apps", {
+                "/"(controller: 'app') {
+                    action = [GET: 'getVisibleApps', POST: 'requestIntegration']
+                }
+                "/all"(controller: 'app') {
+                    action = [GET: 'getAllApps']
+                }
+                "/$id/approve"(controller: 'app') {
+                    action = [POST: 'approveRequest']
+                }
+                "/count"(controller: 'app') {
+                    action = [GET: 'count']
+                }
+
+            }
         }
 
 

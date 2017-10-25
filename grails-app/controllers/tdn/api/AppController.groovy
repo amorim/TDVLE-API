@@ -11,7 +11,8 @@ class AppController {
     static transients = ['springSecurityService']
 
     def requestIntegration(IntegratedApp ia) {
-        ia.save(flush: true)
+        ia.owner = User.get(springSecurityService.principal.id)
+        ia.save(flush: true, failOnError: true)
         def users = UserAuthority.findAllByAuthority(Authority.findByAuthority('ROLE_ADMIN')).user
         def notifMessage = "App Integration Request"
         def date = new Date()
@@ -27,7 +28,7 @@ class AppController {
     def approveRequest(Long id) {
         IntegratedApp ia = IntegratedApp.findById(id)
         ia.approved = true
-        ia.save()
+        ia.save(flush: true)
         render ia as JSON
     }
 
@@ -35,7 +36,12 @@ class AppController {
         render IntegratedApp.all as JSON
     }
 
-    def getVisibleApps() {
-        render IntegratedApp.findAllByApproved(true) as JSON
+    def getVisibleApps(Long max, Long offset) {
+        render IntegratedApp.executeQuery("from IntegratedApp a where a.approved = true", [max: max, offset: offset]) as JSON
+    }
+
+    def count() {
+        def count = ['appsCount': IntegratedApp.countByApproved(true)]
+        render count as JSON
     }
 }
