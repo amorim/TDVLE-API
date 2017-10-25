@@ -30,4 +30,9 @@ class UserController {
     def user(Long id) {
         respond getUser(User.get(id))
     }
+
+    def update(User user) {
+        user.save(flush: true, failOnError: true)
+        respond status: 204
+    }
 }

@@ -24,6 +24,8 @@ class BootStrap {
             output['username'] = it.username
             output['name'] = it.name
             output['avatar'] = it.avatar
+            output['background'] = it.background
+            output['bornDate'] = it.bornDate
             return output
         }
     }

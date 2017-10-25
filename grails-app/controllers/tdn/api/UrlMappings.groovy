@@ -7,7 +7,7 @@ class UrlMappings {
 
             group "/user", {
                 '/'(controller: 'user') {
-                    action = [GET: 'show']
+                    action = [GET: 'show', PUT: 'update']
                 }
 
                 '/post'(controller: 'post') {
@@ -17,6 +17,10 @@ class UrlMappings {
                 '/followers'(controller: 'followers') {
                     action = [GET: 'index']
                 }
+            }
+
+            "/post/$id"(controller: 'post') {
+                action = [GET: 'post']
             }
 
             "/profile/$id"(controller: 'user') {
