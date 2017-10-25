@@ -24,7 +24,7 @@ class UserController {
     }
 
     def show() {
-        respond getUser(User.get(springSecurityService.principal.id))
+        respond User.get(springSecurityService.principal.id)
     }
 
     def user(Long id) {

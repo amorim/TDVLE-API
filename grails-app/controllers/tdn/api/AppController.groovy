@@ -11,8 +11,13 @@ class AppController {
     static transients = ['springSecurityService']
 
     def requestIntegration(IntegratedApp ia) {
-        ia.owner = User.get(springSecurityService.principal.id)
-        ia.save(flush: true, failOnError: true)
+        IntegratedApp a = new IntegratedApp()
+        a.owner = User.get(springSecurityService.principal.id)
+        a.description = ia.description
+        a.image = ia.image
+        a.uri = ia.uri
+        a.name = ia.name
+        a.save(flush: true, failOnError: true)
         def users = UserAuthority.findAllByAuthority(Authority.findByAuthority('ROLE_ADMIN')).user
         def notifMessage = "App Integration Request"
         def date = new Date()
@@ -22,7 +27,7 @@ class AppController {
                     read: false, destUser: it, fromUser: user)
             n.save()
         }
-        render(status: 201, ia as JSON)
+        render(status: 201, a as JSON)
     }
 
     def approveRequest(Long id) {
