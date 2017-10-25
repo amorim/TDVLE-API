@@ -5,6 +5,8 @@ import com.tdnsecuredrest.User
 import com.tdnsecuredrest.UserAuthority
 import grails.converters.JSON
 
+import javax.xml.bind.ValidationException
+
 class RegisterController {
 
     static allowedMethods = ["POST"]
@@ -15,8 +17,13 @@ class RegisterController {
 
 
     def save(User user) {
-        user.save(flush:true, failOnError: true)
-        UserAuthority.create(user,  Authority.findByAuthority("ROLE_USER"))
-        render(status: 201, user as JSON)
+        if (user.hasErrors()) {
+            render(status: 409, ["This user already exists"] as JSON)
+        } else {
+            user.save(flush:true, failOnError: true)
+            UserAuthority.create(user,  Authority.findByAuthority("ROLE_USER"))
+            render(status: 201, user as JSON)
+        }
+
     }
 }

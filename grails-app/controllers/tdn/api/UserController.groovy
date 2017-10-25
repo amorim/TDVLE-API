@@ -32,7 +32,11 @@ class UserController {
     }
 
     def update(User user) {
-        user.save(flush: true, failOnError: true)
-        respond status: 204
+        if (user.id == springSecurityService.principal.id) {
+            user.save(flush: true, failOnError: true)
+            respond status: 204
+        } else {
+            respond status: 401
+        }
     }
 }
