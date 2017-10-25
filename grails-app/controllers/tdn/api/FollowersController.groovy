@@ -18,7 +18,7 @@ class FollowersController {
                 [springSecurityService.principal.id], [max: max, offset: offset])
         List<User> following = User.executeQuery("from User as u where :user in elements(u.followers)",
                 [user: User.get(springSecurityService.principal.id)])
-        JSONArray arr = new JSONArray();
+        JSONArray arr = new JSONArray()
         users.forEach {
             u -> def json = JSON.parse((u as JSON).toString())
                 json.put("isFollowing", following.contains(u))
@@ -27,8 +27,8 @@ class FollowersController {
         render arr as JSON
     }
 
-    def followerCount() {
-        def followerCount = [followerCount: User.get(springSecurityService.principal.id).followers.size()]
+    def followerCount(Long id) {
+        def followerCount = [followerCount: User.get(id).followers.size()]
         render followerCount as JSON
     }
 
@@ -46,12 +46,19 @@ class FollowersController {
         render u.followers as JSON
     }
 
-    def getFollowing() {
-
+    def following(Long id, Long offset, Long max) {
+        List<User> users = User.executeQuery("from User as u where :user in elements(u.followers)", [user: User.get(id)], [offset: offset, max: max])
+        JSONArray arr = new JSONArray()
+        users.forEach {
+            u -> def json = JSON.parse((u as JSON).toString())
+                json.put("isFollowing", true)
+                arr.put(json)
+        }
+        render arr as JSON
     }
 
-    def following(Long id, Long offset, Long max) {
-        List user = User.executeQuery("from User as u where :user in elements(u.followers)", [user: User.get(id)], [offset: offset, max: max])
-        render user as JSON
+    def followingCount(Long id) {
+        def followingCount = [followingCount: User.executeQuery("from User as u where :user in elements(u.followers)", [user: User.get(id)]).size()]
+        render followingCount as JSON
     }
 }

@@ -18,7 +18,7 @@ class UsersController {
         list.forEach {
             u -> def json = JSON.parse((u as JSON).toString())
                 json.put("isFollowing", following.contains(u))
-                arr.put(json);
+                arr.put(json)
         }
         render arr as JSON
     }
