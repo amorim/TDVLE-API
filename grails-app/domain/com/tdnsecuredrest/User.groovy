@@ -24,6 +24,7 @@ class User implements Serializable {
 	Date bornDate
 	String siewebRegistration
 	String avatar
+	String background
 
 	boolean enabled = true
 	boolean accountExpired
@@ -57,6 +58,7 @@ class User implements Serializable {
 		email blank: false, unique: true
 		bornDate nullable: false
 		avatar nullable: true
+		background nullable: true
 		siewebRegistration nullable: true
 	}
 
