@@ -36,7 +36,7 @@ class UserController {
             user.save(flush: true, failOnError: true)
             respond status: 204
         } else {
-            respond status: 401
+            respond status: 403
         }
     }
 }

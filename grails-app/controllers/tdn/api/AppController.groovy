@@ -17,7 +17,7 @@ class AppController {
         a.image = ia.image
         a.uri = ia.uri
         a.name = ia.name
-        a.approved = true;
+        a.approved = false
         a.save(flush: true, failOnError: true)
         def users = UserAuthority.findAllByAuthority(Authority.findByAuthority('ROLE_ADMIN')).user
         def notifMessage = "App Integration Request"
@@ -43,7 +43,11 @@ class AppController {
     }
 
     def getAllApps(Long max, Long offset) {
-        render IntegratedApp.findAll([max: max, offset: offset]) as JSON
+        if (isAdmin(User.get(springSecurityService.principal.id))) {
+            render IntegratedApp.findAll([max: max, offset: offset]) as JSON
+        } else {
+            render IntegratedApp.executeQuery("from IntegratedApp a where a.approved = true", [max: max, offset: offset]) as JSON
+        }
     }
 
     def getVisibleApps(Long max, Long offset) {
@@ -58,7 +62,6 @@ class AppController {
         } else {
             count = ['appsCount': IntegratedApp.countByApproved(true)]
         }
-        println count
         render count as JSON
     }
 }
