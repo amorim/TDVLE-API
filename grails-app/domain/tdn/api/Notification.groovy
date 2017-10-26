@@ -7,7 +7,7 @@ class Notification {
     static belongsTo = [destUser: User, fromUser: User]
 
     String message
-    //String uri
+    String uri
     boolean read
     Date date
 

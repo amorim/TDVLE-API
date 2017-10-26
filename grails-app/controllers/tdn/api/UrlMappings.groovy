@@ -3,6 +3,7 @@ package tdn.api
 class UrlMappings {
 
     static mappings = {
+
         group "/api", {
 
             group "/user", {
@@ -113,9 +114,7 @@ class UrlMappings {
 
             }
         }
-
-
-        "/"(uri: "/index.html")
+        "/"(uri: '/index.html')
         "500"(view: '/error')
         "404"(view: '/notFound')
         "401"(view: '/unauthorized')

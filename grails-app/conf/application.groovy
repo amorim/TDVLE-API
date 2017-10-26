@@ -25,7 +25,7 @@ grails.plugin.springsecurity.interceptUrlMap = [
 grails.plugin.springsecurity.filterChain.chainMap = [
         [pattern: '/api/register', filters: 'JOINED_FILTERS,-authenticationProcessingFilter,-exceptionTranslationFilter,-securityContextPersistenceFilter'],
         [pattern: '/api/**', filters:'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter'],
-        [pattern: '/**', filters:'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter']
+        //[pattern: '/**', filters:'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter']
 ]
 
 grails.plugin.springsecurity.rest.logout.endpointUrl = '/api/logout'

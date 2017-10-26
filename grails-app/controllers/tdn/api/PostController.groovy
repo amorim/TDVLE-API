@@ -39,7 +39,7 @@ class PostController {
         post.date = new Date()
         post.likes = []
         post.save(flush:true, failOnError: true)
-        sendNotifications(post.user, post.user.followers.toList(), 'Posted new content', post.date)
+        sendNotifications(post.user, post.user.followers.toList(), 'Posted new content', post.date, post)
         JSONArray arr = postListToJSONArray([post].toList())
         render(status: 201, arr[0] as JSON)
     }
@@ -53,7 +53,7 @@ class PostController {
             Like.findByUserAndPost(au, post).delete(flush: true)
         } else {
             likeObj.save(flush: true, failOnError: true)
-            sendNotifications(au, au.followers.toList(), 'Liked your post', new Date())
+            sendNotifications(au, au.followers.toList(), 'Liked your post', new Date(), post)
         }
 
         JSONArray arr = postListToJSONArray([post].toList())
@@ -73,10 +73,10 @@ class PostController {
         return(arr)
     }
 
-    void sendNotifications(User from, List<User> list, String notifMessage, Date date) {
+    void sendNotifications(User from, List<User> list, String notifMessage, Date date, Post p) {
         list.each {
             Notification n = new Notification(message: notifMessage, date: date,
-                    read: false, destUser: it, fromUser: from)
+                    read: false, destUser: it, fromUser: from, uri: '/post/' + p.id)
             n.save(failOnError: true)
         }
     }
