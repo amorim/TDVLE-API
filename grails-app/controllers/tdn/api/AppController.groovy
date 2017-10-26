@@ -37,8 +37,12 @@ class AppController {
         render ia as JSON
     }
 
-    def getAllApps() {
-        render IntegratedApp.all as JSON
+    boolean isAdmin(User user) {
+        return user.authorities.contains(Authority.findByAuthority('ROLE_ADMIN'))
+    }
+
+    def getAllApps(Long max, Long offset) {
+        render IntegratedApp.findAll([max: max, offset: offset]) as JSON
     }
 
     def getVisibleApps(Long max, Long offset) {
@@ -46,7 +50,14 @@ class AppController {
     }
 
     def count() {
-        def count = ['appsCount': IntegratedApp.countByApproved(true)]
+        def count = ['']
+        if (isAdmin(User.get(springSecurityService.principal.id))) {
+            count = ['appsCount': IntegratedApp.count]
+
+        } else {
+            count = ['appsCount': IntegratedApp.countByApproved(true)]
+        }
+        println count
         render count as JSON
     }
 }

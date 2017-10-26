@@ -71,6 +71,9 @@ class UrlMappings {
                 "/"(controller: 'app') {
                     action = [GET: 'getVisibleApps', POST: 'requestIntegration']
                 }
+                "/count"(controller: 'app') {
+                    action = [GET: 'count']
+                }
                 "/all"(controller: 'app') {
                     action = [GET: 'getAllApps']
                 }
@@ -96,7 +99,7 @@ class UrlMappings {
 
             group "/apps", {
                 "/"(controller: 'app') {
-                    action = [GET: 'getVisibleApps', POST: 'requestIntegration']
+                    action = [GET: 'getAllApps', POST: 'requestIntegration']
                 }
                 "/all"(controller: 'app') {
                     action = [GET: 'getAllApps']
