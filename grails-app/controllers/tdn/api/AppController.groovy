@@ -17,6 +17,7 @@ class AppController {
         a.image = ia.image
         a.uri = ia.uri
         a.name = ia.name
+        a.approved = true;
         a.save(flush: true, failOnError: true)
         def users = UserAuthority.findAllByAuthority(Authority.findByAuthority('ROLE_ADMIN')).user
         def notifMessage = "App Integration Request"
@@ -24,7 +25,7 @@ class AppController {
         def user = User.get(springSecurityService.principal.id)
         users.each {
             Notification n = new Notification(message: notifMessage, date: date,
-                    read: false, destUser: it, fromUser: user)
+                    read: false, destUser: it, fromUser: user, uri: '/apps/' + a.id)
             n.save()
         }
         render(status: 201, a as JSON)
