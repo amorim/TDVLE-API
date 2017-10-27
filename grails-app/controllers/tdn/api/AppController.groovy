@@ -17,6 +17,7 @@ class AppController {
         a.image = ia.image
         a.uri = ia.uri
         a.name = ia.name
+        a.approved = false
         a.save(flush: true, failOnError: true)
         def users = UserAuthority.findAllByAuthority(Authority.findByAuthority('ROLE_ADMIN')).user
         def notifMessage = "App Integration Request"
@@ -24,8 +25,8 @@ class AppController {
         def user = User.get(springSecurityService.principal.id)
         users.each {
             Notification n = new Notification(message: notifMessage, date: date,
-                    read: false, destUser: it, fromUser: user)
-            n.save()
+                    read: false, destUser: it, fromUser: user, uri: '/apps/' + a.id)
+            n.save(flush: true, failOnError: true)
         }
         render(status: 201, a as JSON)
     }
@@ -37,16 +38,41 @@ class AppController {
         render ia as JSON
     }
 
-    def getAllApps() {
-        render IntegratedApp.all as JSON
+    boolean isAdmin(User user) {
+        return user.authorities.contains(Authority.findByAuthority('ROLE_ADMIN'))
     }
 
-    def getVisibleApps(Long max, Long offset) {
-        render IntegratedApp.executeQuery("from IntegratedApp a where a.approved = true", [max: max, offset: offset]) as JSON
+    def getAllApps(Long max, Long offset) {
+        if (isAdmin(User.get(springSecurityService.principal.id))) {
+            render IntegratedApp.findAll([max: max, offset: offset]) as JSON
+        } else {
+            render IntegratedApp.executeQuery("from IntegratedApp a where a.approved = true", [max: max, offset: offset]) as JSON
+        }
+    }
+
+    def getApp(Long id) {
+        if ((!IntegratedApp.get(id).approved && isAdmin(User.get(springSecurityService.principal.id))) || (IntegratedApp.get(id).approved)) {
+            render IntegratedApp.get(id) as JSON
+        }
+        render(status: 401, [] as JSON)
+    }
+
+    def deleteApp(Long id) {
+        if (isAdmin(User.get(springSecurityService.principal.id))) {
+            IntegratedApp.get(id).delete(flush: true)
+            render(status: 200, [] as JSON)
+        }
+        render(status: 401, [] as JSON)
     }
 
     def count() {
-        def count = ['appsCount': IntegratedApp.countByApproved(true)]
+        def count = ['']
+        if (isAdmin(User.get(springSecurityService.principal.id))) {
+            count = ['appsCount': IntegratedApp.count]
+
+        } else {
+            count = ['appsCount': IntegratedApp.countByApproved(true)]
+        }
         render count as JSON
     }
 }

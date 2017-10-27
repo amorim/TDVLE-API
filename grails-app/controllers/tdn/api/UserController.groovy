@@ -31,8 +31,19 @@ class UserController {
         respond getUser(User.get(id))
     }
 
+    def delete(Long id) {
+        def user = User.get(id)
+        user.enabled = false
+        user.save(flush:true, failOnError: true)
+        render status: 204
+    }
+
     def update(User user) {
-        user.save(flush: true, failOnError: true)
-        respond status: 204
+        if (user.id == springSecurityService.principal.id) {
+            user.save(flush: true, failOnError: true)
+            respond status: 204
+        } else {
+            respond status: 403
+        }
     }
 }

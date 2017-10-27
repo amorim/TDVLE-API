@@ -2,10 +2,7 @@ package tdn.api
 
 import com.tdnsecuredrest.User
 import grails.converters.JSON
-import grails.plugin.springsecurity.annotation.Secured
 import org.grails.web.json.JSONArray
-
-import javax.annotation.security.RolesAllowed
 
 
 class FollowersController {

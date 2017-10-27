@@ -14,8 +14,10 @@ class PostController {
     transient springSecurityService
     static transients = ['springSecurityService']
 
-    def index() {
-        render Post.findAll("from Post as p where p.user = ? order by p.date desc", [User.get(springSecurityService.principal.id)]) as JSON
+    def index(Long id, Long max, Long offset) {
+        List<Post> list = Post.findAll("from Post as p where p.user = ? order by p.date desc", [User.get(id)], [max: max, offset: offset])
+        JSONArray arr = postListToJSONArray(list)
+        render arr as JSON
     }
 
     def count() {
@@ -39,7 +41,7 @@ class PostController {
         post.date = new Date()
         post.likes = []
         post.save(flush:true, failOnError: true)
-        sendNotifications(post.user, post.user.followers.toList(), 'Posted new content', post.date)
+        sendNotifications(post.user, post.user.followers.toList(), 'Posted new content', post.date, post)
         JSONArray arr = postListToJSONArray([post].toList())
         render(status: 201, arr[0] as JSON)
     }
@@ -53,7 +55,7 @@ class PostController {
             Like.findByUserAndPost(au, post).delete(flush: true)
         } else {
             likeObj.save(flush: true, failOnError: true)
-            sendNotifications(au, au.followers.toList(), 'Liked your post', new Date())
+            sendNotifications(au, au.followers.toList(), 'Liked your post', new Date(), post)
         }
 
         JSONArray arr = postListToJSONArray([post].toList())
@@ -73,11 +75,11 @@ class PostController {
         return(arr)
     }
 
-    void sendNotifications(User from, List<User> list, String notifMessage, Date date) {
+    void sendNotifications(User from, List<User> list, String notifMessage, Date date, Post p) {
         list.each {
             Notification n = new Notification(message: notifMessage, date: date,
-                    read: false, destUser: it, fromUser: from)
-            n.save(failOnError: true)
+                    read: false, destUser: it, fromUser: from, uri: '/post/' + p.id)
+            n.save(flush: true, failOnError: true)
         }
     }
 }
