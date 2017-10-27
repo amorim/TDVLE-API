@@ -72,13 +72,13 @@ class UrlMappings {
 
             group "/apps", {
                 "/"(controller: 'app') {
-                    action = [GET: 'getAllApps', POST: 'requestIntegration']
+                    action = [GET: 'getAllApps', POST: 'requestIntegration', DELETE: 'deleteApp']
                 }
                 "/count"(controller: 'app') {
                     action = [GET: 'count']
                 }
-                "/all"(controller: 'app') {
-                    action = [GET: 'getAllApps']
+                "/$id"(controller: 'app') {
+                    action = [GET: 'getApp']
                 }
                 "/$id/approve"(controller: 'app') {
                     action = [POST: 'approveRequest']
@@ -109,6 +109,9 @@ class UrlMappings {
                 }
                 "/$id/approve"(controller: 'app') {
                     action = [POST: 'approveRequest']
+                }
+                "/$id/delete"(controller: 'app') {
+                    action = [DELETE: 'deleteApp']
                 }
                 "/count"(controller: 'app') {
                     action = [GET: 'count']

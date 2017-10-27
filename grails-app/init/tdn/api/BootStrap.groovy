@@ -18,6 +18,7 @@ class BootStrap {
 //            new Authority(authority: 'ROLE_ADMIN').save flush: true
 //        }
 //        UserAuthority.create(user1, Authority.findByAuthority('ROLE_ADMIN'))
+
         JSON.registerObjectMarshaller(User) {
             def output = [:]
             output['id'] = it.id
