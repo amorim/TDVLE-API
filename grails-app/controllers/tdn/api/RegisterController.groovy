@@ -20,10 +20,9 @@ class RegisterController {
         if (user.hasErrors()) {
             render(status: 409, ["This user already exists"] as JSON)
         } else {
-            user.save(flush:true, failOnError: true)
+            user.save(flush: true, failOnError: true)
             UserAuthority.create(user,  Authority.findByAuthority("ROLE_USER"))
             render(status: 201, user as JSON)
         }
-
     }
 }

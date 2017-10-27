@@ -71,6 +71,9 @@ class UrlMappings {
                 "/$id/posts"(controller: 'post') {
                     action = [GET: 'index']
                 }
+                "/$id"(controller: 'user') {
+                    action = [DELETE: 'delete']
+                }
             }
 
             group "/apps", {
