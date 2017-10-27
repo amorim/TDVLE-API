@@ -77,7 +77,7 @@ class PostController {
         list.each {
             Notification n = new Notification(message: notifMessage, date: date,
                     read: false, destUser: it, fromUser: from, uri: '/post/' + p.id)
-            n.save(failOnError: true)
+            n.save(flush: true, failOnError: true)
         }
     }
 }

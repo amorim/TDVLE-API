@@ -26,7 +26,7 @@ class AppController {
         users.each {
             Notification n = new Notification(message: notifMessage, date: date,
                     read: false, destUser: it, fromUser: user, uri: '/apps/' + a.id)
-            n.save()
+            n.save(flush: true, failOnError: true)
         }
         render(status: 201, a as JSON)
     }
