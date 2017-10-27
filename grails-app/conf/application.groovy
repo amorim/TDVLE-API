@@ -29,7 +29,7 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 ]
 
 grails.plugin.springsecurity.rest.logout.endpointUrl = '/api/logout'
-grails.plugin.springsecurity.rest.token.validation.useBearerToken = true
+grails.plugin.springsecurity.rest.token.storage.jwt.expiration = 86400
 grails.plugin.springsecurity.rest.token.validation.headerName = 'Authorization'
 
 

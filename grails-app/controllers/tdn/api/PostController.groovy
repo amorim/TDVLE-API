@@ -14,8 +14,10 @@ class PostController {
     transient springSecurityService
     static transients = ['springSecurityService']
 
-    def index() {
-        render Post.findAll("from Post as p where p.user = ? order by p.date desc", [User.get(springSecurityService.principal.id)]) as JSON
+    def index(Long id, Long max, Long offset) {
+        List<Post> list = Post.findAll("from Post as p where p.user = ? order by p.date desc", [User.get(id)], [max: max, offset: offset])
+        JSONArray arr = postListToJSONArray(list)
+        render arr as JSON
     }
 
     def count() {

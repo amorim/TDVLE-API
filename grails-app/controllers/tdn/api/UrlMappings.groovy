@@ -68,6 +68,9 @@ class UrlMappings {
                 "/$id/following/count"(controller: 'followers') {
                     action = [GET: 'followingCount']
                 }
+                "/$id/posts"(controller: 'post') {
+                    action = [GET: 'index']
+                }
             }
 
             group "/apps", {
