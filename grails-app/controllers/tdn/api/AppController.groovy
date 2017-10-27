@@ -26,7 +26,7 @@ class AppController {
         users.each {
             Notification n = new Notification(message: notifMessage, date: date,
                     read: false, destUser: it, fromUser: user, uri: '/apps/' + a.id)
-            n.save()
+            n.save(flush: true, failOnError: true)
         }
         render(status: 201, a as JSON)
     }
@@ -50,8 +50,19 @@ class AppController {
         }
     }
 
-    def getVisibleApps(Long max, Long offset) {
-        render IntegratedApp.executeQuery("from IntegratedApp a where a.approved = true", [max: max, offset: offset]) as JSON
+    def getApp(Long id) {
+        if ((!IntegratedApp.get(id).approved && isAdmin(User.get(springSecurityService.principal.id))) || (IntegratedApp.get(id).approved)) {
+            render IntegratedApp.get(id) as JSON
+        }
+        render(status: 401, [] as JSON)
+    }
+
+    def deleteApp(Long id) {
+        if (isAdmin(User.get(springSecurityService.principal.id))) {
+            IntegratedApp.get(id).delete(flush: true)
+            render(status: 200, [] as JSON)
+        }
+        render(status: 401, [] as JSON)
     }
 
     def count() {

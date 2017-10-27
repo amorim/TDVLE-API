@@ -26,6 +26,6 @@ class NotificationController {
 
     def delete(Long id) {
         Notification.get(id).delete(flush: true)
-        render status: 204
+        render(status: 204, [] as JSON)
     }
 }

@@ -2,6 +2,8 @@ package tdn.api
 
 class UrlMappings {
 
+    static excludes = ["/index.html", "/*.js", "/*.css", "/assets", "/*.ico"]
+
     static mappings = {
 
         group "/api", {
@@ -66,17 +68,20 @@ class UrlMappings {
                 "/$id/following/count"(controller: 'followers') {
                     action = [GET: 'followingCount']
                 }
+                "/$id/posts"(controller: 'post') {
+                    action = [GET: 'index']
+                }
             }
 
             group "/apps", {
                 "/"(controller: 'app') {
-                    action = [GET: 'getAllApps', POST: 'requestIntegration']
+                    action = [GET: 'getAllApps', POST: 'requestIntegration', DELETE: 'deleteApp']
                 }
                 "/count"(controller: 'app') {
                     action = [GET: 'count']
                 }
-                "/all"(controller: 'app') {
-                    action = [GET: 'getAllApps']
+                "/$id"(controller: 'app') {
+                    action = [GET: 'getApp']
                 }
                 "/$id/approve"(controller: 'app') {
                     action = [POST: 'approveRequest']
@@ -108,13 +113,17 @@ class UrlMappings {
                 "/$id/approve"(controller: 'app') {
                     action = [POST: 'approveRequest']
                 }
+                "/$id/delete"(controller: 'app') {
+                    action = [DELETE: 'deleteApp']
+                }
                 "/count"(controller: 'app') {
                     action = [GET: 'count']
                 }
 
             }
         }
-        "/"(uri: '/index.html')
+        "/**"(uri: '/index.html')
+
         "500"(view: '/error')
         "404"(view: '/notFound')
         "401"(view: '/unauthorized')

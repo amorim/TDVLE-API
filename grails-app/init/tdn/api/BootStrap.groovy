@@ -11,13 +11,14 @@ class BootStrap {
 
         TimeZone.setDefault(TimeZone.getTimeZone('UTC'))
 
-        def role1 = new Authority(authority:"ROLE_USER").save flush:true
-        def user1 = new User(name: "Senpai", username:"senpai", password:"nil", bornDate: new Date(), email: "senpai@hentai.net").save(flush: true, failOnError: true)
-        UserAuthority.create(user1,role1)
-        if (Authority.findByAuthority('ROLE_ADMIN') == null) {
-            new Authority(authority: 'ROLE_ADMIN').save flush: true
-        }
-        UserAuthority.create(user1, Authority.findByAuthority('ROLE_ADMIN'))
+//        def role1 = new Authority(authority:"ROLE_USER").save flush:true
+//        def user1 = new User(name: "Senpai", username:"senpai", password:"nil", bornDate: new Date(), email: "senpai@hentai.net").save(flush: true, failOnError: true)
+//        UserAuthority.create(user1,role1)
+//        if (Authority.findByAuthority('ROLE_ADMIN') == null) {
+//            new Authority(authority: 'ROLE_ADMIN').save flush: true
+//        }
+//        UserAuthority.create(user1, Authority.findByAuthority('ROLE_ADMIN'))
+
         JSON.registerObjectMarshaller(User) {
             def output = [:]
             output['id'] = it.id
