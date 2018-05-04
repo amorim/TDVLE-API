@@ -33,6 +33,16 @@ class BootStrap {
             output['authority'] = it.authorities
             return output
         }
+
+        def script = "D:\\wamp\\bin\\php\\php5.6.35\\php D:/wamp/www/test.php"
+        def proc = script.execute()
+        proc.waitForOrKill(10000)
+        if(proc.exitValue()!=0){
+            println "[[return code: ${proc.exitValue()}]]"
+            println "[[stderr: ${proc.err.text}]]"
+        }else{
+            println "ok"
+        }
     }
     def destroy = {
 
