@@ -117,7 +117,7 @@ environments:
             driverClassName: org.postgresql.Driver
             dialect: org.hibernate.dialect.PostgreSQL9Dialect
             url: "jdbc:postgresql://localhost:5432/tdn"
-            username: tdn-developer
+            username: tdn_developer
             password: tdndeveloper123
             dbCreate: update
 
