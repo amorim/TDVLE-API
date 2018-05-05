@@ -49,8 +49,6 @@ dependencies {
     compile "org.grails.plugins:spring-security-core:3.2.0"
     compile "org.grails.plugins:spring-security-rest:2.0.0.M2"
 
-    compile "org.grails.plugins:neo4j"
-
     compile 'com.github.jsimone:webapp-runner:8.5.11.3'
 
     console "org.grails:grails-console"
