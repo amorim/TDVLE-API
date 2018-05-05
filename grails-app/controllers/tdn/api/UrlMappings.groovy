@@ -124,6 +124,27 @@ class UrlMappings {
                 }
 
             }
+
+            group "/class", {
+                "/"(controller: 'class') {
+                    action = [GET: 'getAllClasses']
+                }
+                "/create"(controller: 'class') {
+                    action = [POST: 'createClass']
+                }
+                "/$id/delete"(controller: 'class') {
+                    action = [DELETE: 'removeClass']
+                }
+                "/$id"(controller: 'class') {
+                    action = [GET: 'getClass']
+                }
+                "/$id/submissions"(controller: 'class') {
+                    action = [GET: 'getSubmissions', POST: 'submitSolution']
+                }
+                "/$classId/submissions/$id"(controller: 'class') {
+                    action = [GET: 'getSubmission', DELETE: 'deleteSubmission']
+                }
+            }
         }
         "/**"(uri: '/index.html')
 
