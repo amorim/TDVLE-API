@@ -2,6 +2,7 @@ package com.tdnsecuredrest
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import tdn.api.Class
 import tdn.api.Like
 import tdn.api.IntegratedApp
 import tdn.api.Notification

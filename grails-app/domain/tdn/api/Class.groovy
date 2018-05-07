@@ -8,7 +8,7 @@ class Class {
     boolean active
     String classAccessCode
 
-    static hasMany = [users: User, activities: ClassActivity]
+    static hasMany = [activities: ClassActivity]
     static belongsTo = [teacher: User]
 
     static constraints = {

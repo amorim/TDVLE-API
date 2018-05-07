@@ -129,8 +129,14 @@ class UrlMappings {
                 "/"(controller: 'class') {
                     action = [GET: 'getAllClasses']
                 }
+                "/count"(controller: 'class') {
+                    action = [GET: 'classCount']
+                }
                 "/create"(controller: 'class') {
                     action = [POST: 'createClass']
+                }
+                "/enter"(controller: 'class') {
+                    action = [POST: 'enterClass']
                 }
                 "/$id/delete"(controller: 'class') {
                     action = [DELETE: 'removeClass']

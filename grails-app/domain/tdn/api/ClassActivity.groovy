@@ -8,7 +8,6 @@ class ClassActivity {
     String detail
     Date dueDate
 
-
     static constraints = {
     }
 }
