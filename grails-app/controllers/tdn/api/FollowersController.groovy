@@ -30,8 +30,12 @@ class FollowersController {
     }
 
     def save(Long id) {
+        User au = User.get(springSecurityService.principal.id)
         User u = User.get(id)
-        u.addToFollowers(User.get(springSecurityService.principal.id))
+        u.addToFollowers(au)
+        Notification n = new Notification(message: 'Followed you', date: new Date(),
+                read: false, destUser: u, fromUser: au, uri: '/profile/' + au.id)
+        n.save(flush: true, failOnError: true)
         u.save(flush: true, failOnError: true)
         render u.followers as JSON
     }

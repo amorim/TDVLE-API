@@ -151,6 +151,16 @@ class UrlMappings {
                     action = [GET: 'getSubmission', DELETE: 'deleteSubmission']
                 }
             }
+
+            group "/authority", {
+                "/"(controller: 'authority') {
+                    action = [GET: 'index']
+                }
+                "/request"(controller: 'authority') {
+                    action = [POST: 'request']
+                }
+                // I won't define a count for now...
+            }
         }
         "/**"(uri: '/index.html')
 

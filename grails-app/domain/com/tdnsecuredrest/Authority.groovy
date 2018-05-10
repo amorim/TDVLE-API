@@ -10,6 +10,7 @@ class Authority implements Serializable {
 	private static final long serialVersionUID = 1
 
 	String authority
+	String description
 
 	static constraints = {
 		authority blank: false, unique: true
