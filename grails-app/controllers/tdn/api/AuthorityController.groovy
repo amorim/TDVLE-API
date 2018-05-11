@@ -4,6 +4,7 @@ import com.tdnsecuredrest.Authority
 import com.tdnsecuredrest.User
 import com.tdnsecuredrest.UserAuthority
 import grails.converters.JSON
+import groovy.json.JsonSlurper
 import org.grails.web.json.JSONArray
 
 class AuthorityController {
@@ -24,11 +25,32 @@ class AuthorityController {
         render arr as JSON
     }
 
-    def request(Authority authority) {
+    def requestAuthorities(List<Authority> authorities) {
+        User au = User.get(springSecurityService.principal.id)
+        authorities = new ArrayList<>()
+        def json = request.JSON
+        for (i in json) {
+            if (i["enabled"] == true) {
+                Authority authority = JSON.parse(i.toString()).asType(Authority)
+                authorities.add(authority)
+            }
+        }
+
+        String notifMessage = au.name + " requested: "
+        int now = 0
+        for (i in authorities) {
+            if (now) notifMessage = notifMessage + ", "
+            notifMessage = notifMessage + i.description
+            now += 1
+        }
+        println notifMessage
+
         List<User> adminList = UserAuthority.findAllByAuthority(Authority.findByAuthority("ROLE_ADMIN")).user
-        println adminList
-        Notification n = new Notification(message: notifMessage, date: date,
-                read: false, destUser: it, fromUser: from, uri: '/post/' + p.id)
-        n.save(flush: true, failOnError: true)
+        for (i in adminList) {
+            Notification n = new Notification(message: notifMessage, date: new Date(),
+                read: false, destUser: i, fromUser: au, uri: '/authority/' + au.id)
+            n.save(flush: true, failOnError: true)
+        }
+        render(status:200, [] as JSON)
     }
 }

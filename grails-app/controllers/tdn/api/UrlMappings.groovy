@@ -157,7 +157,7 @@ class UrlMappings {
                     action = [GET: 'index']
                 }
                 "/request"(controller: 'authority') {
-                    action = [POST: 'request']
+                    action = [POST: 'requestAuthorities']
                 }
                 // I won't define a count for now...
             }
