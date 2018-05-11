@@ -156,6 +156,9 @@ class UrlMappings {
                 "/"(controller: 'authority') {
                     action = [GET: 'index']
                 }
+                "/$id"(controller: 'authority') {
+                    action = [GET: 'getAuthoritiesFromUser', POST: 'setAuthorities']
+                }
                 "/request"(controller: 'authority') {
                     action = [POST: 'requestAuthorities']
                 }

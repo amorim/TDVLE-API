@@ -15,19 +15,19 @@ class AuthorityController {
 
     def index() {
         User au = User.get(springSecurityService.principal.id)
-        List<Authority> authorityList = Authority.findAll()
-        JSONArray arr = new JSONArray()
-        authorityList.forEach {
-            a -> def json = JSON.parse((a as JSON).toString())
-                json.put("enabled", UserAuthority.countByUserAndAuthority(au, a) > 0)
-                arr.put(json)
-        }
+        JSONArray arr = getAuthorities(au)
         render arr as JSON
     }
 
-    def requestAuthorities(List<Authority> authorities) {
+    def getAuthoritiesFromUser(Long id) {
+        User u = User.get(id)
+        JSONArray arr = getAuthorities(u)
+        render arr as JSON
+    }
+
+    def requestAuthorities() {
         User au = User.get(springSecurityService.principal.id)
-        authorities = new ArrayList<>()
+        List<Authority> authorities = new ArrayList<>()
         def json = request.JSON
         for (i in json) {
             if (i["enabled"] == true) {
@@ -43,7 +43,6 @@ class AuthorityController {
             notifMessage = notifMessage + i.description
             now += 1
         }
-        println notifMessage
 
         List<User> adminList = UserAuthority.findAllByAuthority(Authority.findByAuthority("ROLE_ADMIN")).user
         for (i in adminList) {
@@ -52,5 +51,32 @@ class AuthorityController {
             n.save(flush: true, failOnError: true)
         }
         render(status:200, [] as JSON)
+    }
+
+    def setAuthorities(Long id) {
+        User u = User.get(id)
+        def json = request.JSON
+        for (i in json) {
+            Authority authority = JSON.parse(i.toString()).asType(Authority)
+            authority = Authority.findByAuthority(authority.authority)
+            if (i["enabled"] == true && UserAuthority.countByUserAndAuthority(u, authority) == 0) {
+                UserAuthority userAuthority = new UserAuthority(user: u, authority: authority)
+                userAuthority.save(flush: true, failOnError: true)
+            } else if (i["enabled"] == false && UserAuthority.countByUserAndAuthority(u, authority) > 0) {
+                UserAuthority.findByUserAndAuthority(u, authority).delete(flush: true, failOnError: true)
+            }
+        }
+        render(status: 200, [] as JSON)
+    }
+
+    JSONArray getAuthorities(User u) {
+        List<Authority> authorityList = Authority.findAll()
+        JSONArray arr = new JSONArray()
+        authorityList.forEach {
+            a -> def json = JSON.parse((a as JSON).toString())
+                json.put("enabled", UserAuthority.countByUserAndAuthority(u, a) > 0)
+                arr.put(json)
+            }
+        return(arr)
     }
 }
