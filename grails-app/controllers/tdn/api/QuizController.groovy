@@ -29,7 +29,6 @@ class QuizController {
         quiz.clazz = Class.findById(id)
         quiz.save(flush: true, failOnError: true)
         quiz.uri = "../quiz/" + quiz.id
-        quiz.dueDate = new Date()
         quiz.save(flush: true, failOnError: true)
         render(status: 201, {} as JSON)
     }
