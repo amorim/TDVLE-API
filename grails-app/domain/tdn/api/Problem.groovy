@@ -10,5 +10,7 @@ class Problem {
     char answer
 
     static constraints = {
+        answer nullable: true
+        alternativeDescription nullable: true
     }
 }
