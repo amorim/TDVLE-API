@@ -119,7 +119,7 @@ environments:
             url: "jdbc:postgresql://localhost:5432/tdn"
             username: tdn_developer
             password: tdndeveloper123
-            dbCreate: update
+            dbCreate: create-drop #update
 
     test:
         dataSource:

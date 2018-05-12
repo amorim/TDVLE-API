@@ -25,29 +25,14 @@ class QuizController {
         }
     }
 
-//    def createQuiz(Long id) {
-//        println request.JSON
-//        Quiz quiz = new Quiz(request.JSON as JSONObject)
-//        quiz.clazz = Class.findById(id)
-//        quiz.uri = "/classes/" + quiz.clazz.id + "/quiz/"
-//        quiz.save(flush: true, failOnError: true)
-//        //quiz.uri = quiz.uri + quiz.getId()
-//        //quiz.save(fluse: true, failOnError: true)
-//        //quiz.uri = quiz.uri + quiz.id
-//        //quiz.save(flush: true, failOnError: true)
-//        render(status: 201, quiz as JSON)
-//    }
     def createQuiz(Long id) {
+        println request.JSON
         Quiz quiz = new Quiz(request.JSON as JSONObject)
         quiz.clazz = Class.findById(id)
-        println quiz.problems
-        println quiz.title
-        println quiz.detail
-        println quiz.dueDate
+        quiz.uri = "/classes/" + quiz.clazz.id + "/quiz/"
         quiz.save(flush: true, failOnError: true)
-        quiz.uri = "../quiz/" + quiz.id
-        quiz.dueDate = new Date()
+        quiz.uri = quiz.uri + quiz.getId()
         quiz.save(flush: true, failOnError: true)
-        render(status: 201, {} as JSON)
+        render(status: 201, quiz as JSON)
     }
 }

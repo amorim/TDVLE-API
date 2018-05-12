@@ -7,10 +7,9 @@ class Problem {
     int kind // 0 - open, 1 - multiple
     String description
     ArrayList<String> alternativeDescription
-    char answer
+    int answer
 
     static constraints = {
-        answer nullable: true
         alternativeDescription nullable: true
     }
 }
