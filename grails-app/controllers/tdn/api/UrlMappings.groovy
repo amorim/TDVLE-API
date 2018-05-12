@@ -151,6 +151,40 @@ class UrlMappings {
                     action = [GET: 'getSubmission', DELETE: 'deleteSubmission']
                 }
             }
+
+            group "/quiz", {
+                "/"(controller: 'quiz') {
+                    action = [GET: 'index']
+                }
+                "/$id"(controller: 'quiz') {
+                    action = [GET: 'getProblem']
+                }
+                "/create"(controller: 'quiz') {
+                    action = [POST: 'createProblem']
+                }
+            }
+
+            group "/problem" {
+                "/"(controller: 'problem') {
+                    action = [GET: 'index']
+                }
+                "/$id/create"(controller: 'problem') {
+                    action = [POST: 'createProblem']
+                }
+            }
+
+            group "/authority", {
+                "/"(controller: 'authority') {
+                    action = [GET: 'index']
+                }
+                "/$id"(controller: 'authority') {
+                    action = [GET: 'getAuthoritiesFromUser', POST: 'setAuthorities']
+                }
+                "/request"(controller: 'authority') {
+                    action = [POST: 'requestAuthorities']
+                }
+                // I won't define a count for now...
+            }
         }
         "/**"(uri: '/index.html')
 

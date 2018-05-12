@@ -14,7 +14,7 @@ class ClassController {
     def getAllClasses(Long max, Long offset) {
         def au = User.findById(springSecurityService.principal.id)
         if (UserAuthority.findByUserAndAuthority(au, Authority.findByAuthority("ROLE_TEACHER"))) {
-            render Class.findAllByTeacher(au) as JSON
+            render Class.findAllByTeacher(au, [max: max, offset: offset]) as JSON
         }
         else {
             render UserClass.findAllByUser(au, [max: max, offset: offset]).clazz as JSON

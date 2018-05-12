@@ -11,13 +11,13 @@ class BootStrap {
 
         TimeZone.setDefault(TimeZone.getTimeZone('UTC'))
         if (Authority.findByAuthority('ROLE_USER') == null) {
-            new Authority(authority: 'ROLE_USER').save flush: true
+            new Authority(authority: 'ROLE_USER', description: 'User role').save flush: true
         }
         if (Authority.findByAuthority('ROLE_ADMIN') == null) {
-            new Authority(authority: 'ROLE_ADMIN').save flush: true
+            new Authority(authority: 'ROLE_ADMIN', description: 'Admin role').save flush: true
         }
         if (Authority.findByAuthority('ROLE_TEACHER') == null) {
-            new Authority(authority: 'ROLE_TEACHER').save flush: true
+            new Authority(authority: 'ROLE_TEACHER', description: 'Teacher role').save flush: true
         }
         if (User.findByUsername("senpai") == null) {
             def user1 = new User(name: "Senpai", username: "senpai", password: "nil", bornDate: new Date(), email: "senpai@hentai.net").save(flush: true, failOnError: true)

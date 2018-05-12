@@ -7,6 +7,7 @@ class ClassActivity {
     String title
     String detail
     Date dueDate
+    String uri
 
     static constraints = {
     }

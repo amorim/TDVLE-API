@@ -3,13 +3,9 @@ package tdn.api
 import com.tdnsecuredrest.User
 import grails.converters.JSON
 import org.grails.web.json.JSONArray
-import org.joda.time.DateTimeZone
-
-import javax.annotation.security.RolesAllowed
 
 class PostController {
 
-//    static notifMessage =
     static responseFormats = ['json', 'xml']
     transient springSecurityService
     static transients = ['springSecurityService']
@@ -55,7 +51,7 @@ class PostController {
             Like.findByUserAndPost(au, post).delete(flush: true)
         } else {
             likeObj.save(flush: true, failOnError: true)
-            sendNotifications(au, au.followers.toList(), 'Liked your post', new Date(), post)
+            sendNotifications(au, [post.user], 'Liked your post', new Date(), post)
         }
 
         JSONArray arr = postListToJSONArray([post].toList())
