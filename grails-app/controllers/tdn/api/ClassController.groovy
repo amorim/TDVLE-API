@@ -25,7 +25,9 @@ class ClassController {
         User au = User.get(springSecurityService.principal.id)
         Class cs = Class.get(id)
         if (UserClass.countByUserAndClazz(au, cs) || cs.teacher == au) {
-            List<Quiz> quizList = Quiz.findAllByClazz(Class.get(id))
+            println cs
+            println Quiz.countByClazz(cs)
+            List<Quiz> quizList = Quiz.findAllByClazz(cs)
             println quizList
             render quizList as JSON
         } else {
@@ -68,14 +70,14 @@ class ClassController {
         render count as JSON
     }
 
-    def getClazz(Long id) {
-        def au = User.findById(springSecurityService.principal.id)
-        if (UserClass.findByUserAndClazz(au, Class.findById(id)) || Class.findById(id).teacher == au) {
-            def k = ClassActivity.findAllByClazz(Class.findById(id))
-            k += Quiz.findAllByClazz(Class.findById(id))
-            render k as JSON
-        }
-        else
-            render(status: 401, [] as JSON)
-    }
+//    def getClazz(Long id) {
+//        def au = User.findById(springSecurityService.principal.id)
+//        if (UserClass.findByUserAndClazz(au, Class.findById(id)) || Class.findById(id).teacher == au) {
+//            def k = ClassActivity.findAllByClazz(Class.findById(id))
+//            k += Quiz.findAllByClazz(Class.findById(id))
+//            render k as JSON
+//        }
+//        else
+//            render(status: 401, [] as JSON)
+//    }
 }
