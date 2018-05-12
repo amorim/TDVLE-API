@@ -11,5 +11,7 @@ class Quiz {
     String uri
 
     static constraints = {
+        uri nullable: true
+        dueDate nullable: true
     }
 }

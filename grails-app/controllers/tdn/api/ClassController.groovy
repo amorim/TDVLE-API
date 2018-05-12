@@ -67,4 +67,15 @@ class ClassController {
         }
         render count as JSON
     }
+
+    def getClazz(Long id) {
+        def au = User.findById(springSecurityService.principal.id)
+        if (UserClass.findByUserAndClazz(au, Class.findById(id)) || Class.findById(id).teacher == au) {
+            def k = ClassActivity.findAllByClazz(Class.findById(id))
+            k += Quiz.findAllByClazz(Class.findById(id))
+            render k as JSON
+        }
+        else
+            render(status: 401, [] as JSON)
+    }
 }
