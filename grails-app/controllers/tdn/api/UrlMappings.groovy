@@ -152,6 +152,27 @@ class UrlMappings {
                 }
             }
 
+            group "/quiz", {
+                "/"(controller: 'quiz') {
+                    action = [GET: 'index']
+                }
+                "/$id"(controller: 'quiz') {
+                    action = [GET: 'getProblem']
+                }
+                "/create"(controller: 'quiz') {
+                    action = [POST: 'createProblem']
+                }
+            }
+
+            group "/problem" {
+                "/"(controller: 'problem') {
+                    action = [GET: 'index']
+                }
+                "/$id/create"(controller: 'problem') {
+                    action = [POST: 'createProblem']
+                }
+            }
+
             group "/authority", {
                 "/"(controller: 'authority') {
                     action = [GET: 'index']

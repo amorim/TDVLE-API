@@ -1,8 +1,9 @@
 package tdn.api
 
-class ClassActivity {
+class Quiz {
 
     static belongsTo = [clazz: Class]
+    static hasMany = [problems: Problem]
 
     String title
     String detail
