@@ -1,6 +1,7 @@
 package tdn.api
 
 import grails.converters.JSON
+import net.minidev.json.JSONObject
 
 class QuizController {
 
@@ -15,20 +16,21 @@ class QuizController {
 
     def getProblem(Long id, Long offset) {
         Quiz quiz = Quiz.get(id)
-        if (offset < quiz.problems.size() && offset >= 0) {
-            render quiz.problems[offset] as JSON
-        }
-        else {
-            render(status: 999, [] as JSON)
+            if (offset < quiz.problems.size() && offset >= 0) {
+                render quiz.problems[offset] as JSON
+            }
+            else {
+                render(status: 999, [] as JSON)
         }
     }
 
-    def createQuiz(Quiz quiz) {
-        println "Before" + quiz.id
+    def createQuiz(Long id) {
+        Quiz quiz = new Quiz(request.JSON as JSONObject)
+        quiz.clazz = Class.findById(id)
         quiz.save(flush: true, failOnError: true)
-        println "After" + quiz.id
-        quiz.uri = "/quiz/" + quiz.id
+        quiz.uri = "../quiz/" + quiz.id
+        quiz.dueDate = new Date()
         quiz.save(flush: true, failOnError: true)
-        render(status: 200, [] as JSON)
+        render(status: 201, {} as JSON)
     }
 }

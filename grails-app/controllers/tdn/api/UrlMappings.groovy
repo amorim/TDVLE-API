@@ -150,6 +150,9 @@ class UrlMappings {
                 "/$classId/submissions/$id"(controller: 'class') {
                     action = [GET: 'getSubmission', DELETE: 'deleteSubmission']
                 }
+                "/$id/quiz/create"(controller: 'quiz') {
+                    action = [POST: 'createQuiz']
+                }
             }
 
             group "/quiz", {
