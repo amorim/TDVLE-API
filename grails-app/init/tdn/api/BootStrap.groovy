@@ -37,6 +37,15 @@ class BootStrap {
             return output
         }
 
+        JSON.registerObjectMarshaller(Class) {
+            def output = [:]
+            output['id'] = it.id
+            output['name'] = it.name
+            output['teacher'] = it.teacher
+            output['classAccessCode'] = it.classAccessCode
+            return output
+        }
+
 //        def script = "D:\\wamp\\bin\\php\\php5.6.35\\php D:/wamp/www/test.php"
 //        def proc = script.execute()
 //        proc.waitForOrKill(10000)
