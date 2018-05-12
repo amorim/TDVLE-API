@@ -142,7 +142,7 @@ class UrlMappings {
                     action = [DELETE: 'removeClass']
                 }
                 "/$id"(controller: 'class') {
-                    action = [GET: 'getClass']
+                    action = [GET: 'getClazz']
                 }
                 "/$id/submissions"(controller: 'class') {
                     action = [GET: 'getSubmissions', POST: 'submitSolution']

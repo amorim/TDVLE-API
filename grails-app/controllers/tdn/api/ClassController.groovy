@@ -21,6 +21,18 @@ class ClassController {
         }
     }
 
+    def getClazz(Long id) {
+        User au = User.get(springSecurityService.principal.id)
+        Class cs = Class.get(id)
+        if (UserClass.countByUserAndClazz(au, cs) || cs.teacher == au) {
+            List<Quiz> quizList = Quiz.findAllByClazz(Class.get(id))
+            println quizList
+            render quizList as JSON
+        } else {
+            render(status: 401, [] as JSON)
+        }
+    }
+
     def enterClass(Class bug) {
         String classAccessCode = bug.classAccessCode
         if (Class.countByClassAccessCode(classAccessCode)) {
