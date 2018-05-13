@@ -4,12 +4,11 @@ class Problem {
 
     static belongsTo = [quiz: Quiz]
 
-    int kind // 0 - open, 1 - multiple
+    boolean kind // 0 - open, 1 - multiple
     String description
-    ArrayList<String> alternativeDescription
+    ArrayList<String> alternativeDescription = new ArrayList<>()
     int answer
 
     static constraints = {
-        alternativeDescription nullable: true
     }
 }
