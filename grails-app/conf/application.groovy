@@ -19,11 +19,16 @@ grails.plugin.springsecurity.interceptUrlMap = [
         [pattern: '/api/register',   access: ['permitAll']],
         [pattern: '/api/apps/all',      access: ['ROLE_ADMIN']],
         [pattern: '/api/class/create',   access: ['ROLE_TEACHER']],
+        [pattern: '/api/authority/all', access: ['permitAll']],
+        [pattern: '/api/authority/$id',  access: ['ROLE_ADMIN']],
+        [pattern: '/api/class/$id/activity/create', access: ['ROLE_TEACHER']],
+        [pattern: '/api/class/$id/quiz/create', access: ['ROLE_TEACHER']],
         [pattern: '/api/apps/**/approve',      access: ['ROLE_ADMIN']],
         [pattern: '/api/logout',     access: ['isFullyAuthenticated()']],
         [pattern: '/**',             access: ['permitAll']]
 ]
 grails.plugin.springsecurity.filterChain.chainMap = [
+        [pattern: '/api/authority/all', filters: 'JOINED_FILTERS,-authenticationProcessingFilter,-exceptionTranslationFilter,-securityContextPersistenceFilter'],
         [pattern: '/api/register', filters: 'JOINED_FILTERS,-authenticationProcessingFilter,-exceptionTranslationFilter,-securityContextPersistenceFilter'],
         [pattern: '/api/**', filters:'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter'],
         [pattern: '/**', filters:'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter']

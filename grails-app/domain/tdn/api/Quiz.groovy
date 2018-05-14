@@ -1,9 +1,10 @@
 package tdn.api
 
-class ClassActivity {
+class Quiz {
 
     static belongsTo = [clazz: Class]
-    static hasMany = [teacherSubmissions: Submission]
+    static hasMany = [problems: Problem]
+
     String title
     String detail
     Date dueDate
@@ -11,5 +12,6 @@ class ClassActivity {
 
     static constraints = {
         uri nullable: true
+        dueDate nullable: true
     }
 }

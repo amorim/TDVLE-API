@@ -142,7 +142,7 @@ class UrlMappings {
                     action = [DELETE: 'removeClass']
                 }
                 "/$id"(controller: 'class') {
-                    action = [GET: 'getClass']
+                    action = [GET: 'getClazz']
                 }
                 "/$id/submissions"(controller: 'class') {
                     action = [GET: 'getSubmissions', POST: 'submitSolution']
@@ -150,14 +150,71 @@ class UrlMappings {
                 "/$classId/submissions/$id"(controller: 'class') {
                     action = [GET: 'getSubmission', DELETE: 'deleteSubmission']
                 }
+                "/$id/quiz/create"(controller: 'quiz') {
+                    action = [POST: 'createQuiz']
+                }
+                "/$classId/quiz/$quizId"(controller: 'quiz') {
+                    action = [GET: 'getQuiz']
+                }
+                "/$classId/quiz/$quizId/submit"(controller: 'quiz') {
+                    action = [POST: 'submit']
+                }
+                "/$classId/quiz/$quizId/answers"(controller: 'quiz') {
+                    action = [GET: 'getAnswers']
+                }
+                "/$classId/quiz/$quizId/answers/evaluate"(controller: 'quiz') {
+                    action = [POST: 'evaluateAnswer']
+                }
+                "/$id/activity/create"(controller: 'class') {
+                    action = [POST: 'createActivity']
+                }
+            }
+
+            group "/quiz", {
+                "/"(controller: 'quiz') {
+                    action = [GET: 'index']
+                }
+                "/$id"(controller: 'quiz') {
+                    action = [GET: 'getProblem']
+                }
+                "/create"(controller: 'quiz') {
+                    action = [POST: 'createProblem']
+                }
+            }
+
+            group "/activity", {
+                "/$id"(controller: 'class') {
+                    action = [GET: 'getActivity']
+                }
+                "/$id/submissions"(controller: 'class') {
+                    action = [GET: 'getSubmissions', POST: 'addSubmissions']
+                }
+                "/$id/allSubmissions"(controller: 'class') {
+                    action = [GET: 'getAllSubmissions']
+                }
+            }
+
+            group "/problem" {
+                "/"(controller: 'problem') {
+                    action = [GET: 'index']
+                }
+                "/$id/create"(controller: 'problem') {
+                    action = [POST: 'createProblem']
+                }
             }
 
             group "/authority", {
                 "/"(controller: 'authority') {
                     action = [GET: 'index']
                 }
+                "/all"(controller: 'authority') {
+                    action = [GET: 'getAll']
+                }
+                "/$id"(controller: 'authority') {
+                    action = [GET: 'getAuthoritiesFromUser', POST: 'setAuthorities']
+                }
                 "/request"(controller: 'authority') {
-                    action = [POST: 'request']
+                    action = [POST: 'requestAuthorities']
                 }
                 // I won't define a count for now...
             }
