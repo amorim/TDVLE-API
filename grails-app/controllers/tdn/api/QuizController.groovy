@@ -29,14 +29,15 @@ class QuizController {
         User au = User.get(springSecurityService.principal.id)
         Class clazz = Class.findById(classId)
         Quiz quiz = Quiz.findByClazzAndId(clazz, quizId)
-        def swi = ["switch": true, "quiz": quiz]
         if (UserClass.countByClazzAndUser(clazz, au)) {
             if (QuizAnswer.countByStudentAndQuiz(au, quiz)) {
+                def swi = ["switchStudent": true, "quiz": quiz]
                 render swi as JSON
             } else {
                 render quiz as JSON
             }
         } else if (clazz.teacher == au) {
+            def swi = ["switchTeacher": true, "quiz": quiz]
             render swi as JSON
         } else {
             render(status: 999, [] as JSON)
@@ -66,7 +67,11 @@ class QuizController {
     }
 
     def submit(Long classId, Long quizId, QuizAnswer quizAnswer) {
+        User au = User.get(springSecurityService.principal.id)
         Class clazz = Class.get(classId)
+        if (QuizAnswer.countByStudentAndQuiz(au, quizAnswer.quiz)) {
+            render(status: 999, [])
+        }
         quizAnswer.student = User.get(springSecurityService.principal.id)
         quizAnswer.quiz = Quiz.get(quizId)
         quizAnswer.save(flush: true, failOnError: true)
@@ -76,7 +81,9 @@ class QuizController {
 
     def evaluateAnswer(Long classId, Long quizId, Evaluation evaluation) {
         User au = User.get(springSecurityService.principal.id)
-        println evaluation.quizAnswer.id
+        if (Evaluation.countByQuizAnswer(evaluation.quizAnswer)) {
+            render(status: 999, [] as JSON)
+        }
         evaluation.save(flush: true, failOnError: true)
         println evaluation.quizAnswer.id
         sendNotifications(au, [evaluation.quizAnswer.student], "Evaluated your answer: ${evaluation.grade}%", new Date(), evaluation.quizAnswer.quiz);

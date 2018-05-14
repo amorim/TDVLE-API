@@ -30,14 +30,14 @@ class ClassController {
             JSONArray arr = new JSONArray()
             for (ql in quizList) {
                 QuizAnswer qa = QuizAnswer.findByStudentAndQuiz(au, ql)
+                def json = JSON.parse((ql as JSON).toString())
                 if (qa != null) {
-                    def json = JSON.parse((ql as JSON).toString())
                     if (qa.evaluation != null) {
                         json.put("evaluated", true)
                         json.put("evaluation", qa.evaluation)
-                        arr.put(json)
                     }
                 }
+                arr.put(json)
             }
             render arr as JSON
         } else { if (cs.teacher == au) {
