@@ -19,6 +19,10 @@ class AuthorityController {
         render arr as JSON
     }
 
+    def getAll() {
+        render Authority.findAll() as JSON
+    }
+
     def getAuthoritiesFromUser(Long id) {
         User u = User.get(id)
         JSONArray arr = getAuthorities(u)

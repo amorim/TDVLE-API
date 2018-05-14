@@ -10,5 +10,6 @@ class ClassActivity {
     String uri
 
     static constraints = {
+        uri nullable: true
     }
 }

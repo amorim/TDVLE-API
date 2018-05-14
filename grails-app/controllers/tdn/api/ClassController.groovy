@@ -3,13 +3,16 @@ package tdn.api
 import com.tdnsecuredrest.Authority
 import com.tdnsecuredrest.User
 import com.tdnsecuredrest.UserAuthority
+import grails.async.Promise
 import grails.converters.JSON
-
+import grails.http.client.AsyncHttpBuilder
+import grails.http.client.HttpClientResponse
+import net.minidev.json.JSONArray
+import org.grails.web.json.JSONObject
 
 class ClassController {
     transient springSecurityService
     static transients = ['springSecurityService']
-
 
     def getAllClasses(Long max, Long offset) {
         def au = User.findById(springSecurityService.principal.id)
@@ -25,10 +28,9 @@ class ClassController {
         User au = User.get(springSecurityService.principal.id)
         Class cs = Class.get(id)
         if (UserClass.countByUserAndClazz(au, cs) || cs.teacher == au) {
-            println cs
-            println Quiz.countByClazz(cs)
-            List<Quiz> quizList = Quiz.findAllByClazz(cs)
-            println quizList
+            def quizList = Quiz.findAllByClazz(cs)
+            def activityList = ClassActivity.findAllByClazz(cs)
+            quizList += activityList
             render quizList as JSON
         } else {
             render(status: 401, [] as JSON)
@@ -70,6 +72,66 @@ class ClassController {
         render count as JSON
     }
 
+    def createActivity(Long id) {
+        def activity = new ClassActivity(request.JSON as JSONObject)
+        activity.clazz = Class.findById(id)
+        activity.save(flush: true, failOnError: true)
+        activity.uri = '/classes/' + id + '/activity/' + activity.id
+        activity.save(flush: true, failOnError: true)
+        render(status: 201, activity as JSON)
+        AsyncHttpBuilder client = new AsyncHttpBuilder()
+        for (userclass in UserClass.findAllByClazz(activity.clazz))
+            sendEmail(activity.clazz.teacher.name + ", from " + activity.clazz.name + ", posted a new activity at TDVLE. Click <a href='https://casaamorim.no-ip.biz:4000/classes/" + activity.clazz.id + "/activity/" + activity.id + "'>here</a> to view this activity.", userclass.user.email, "New activity at TDVLE", client)
+    }
+
+    def getActivity(Long id) {
+        def au = User.findById(springSecurityService.principal.id)
+        def activity = ClassActivity.findById(id)
+        //linha deu um erro uma vez
+        def cs = activity.clazz
+        if (UserClass.countByUserAndClazz(au, cs) || cs.teacher == au) {
+            render (status: 200, activity as JSON)
+        }
+        else
+            render (status: 401, {} as JSON)
+    }
+
+    def getSubmissions(Long id) {
+        def au = User.findById(springSecurityService.principal.id)
+        def activity = ClassActivity.findById(id)
+        def ua = UserActivity.findByActivityAndUser(activity, au)
+        def subs = []
+        if (ua)
+            subs = ua.submissions
+        render (status: 200, subs as JSON)
+    }
+
+    def addSubmissions(Long id) {
+        def au = User.findById(springSecurityService.principal.id)
+        def activity = ClassActivity.findById(id)
+        if (new Date() > activity.dueDate)
+            render(status: 401, {} as JSON)
+        def submissions = []
+        def inputarray = request.JSON as JSONArray
+        def ua = UserActivity.findByActivityAndUser(activity, au)
+        if (!ua)
+            ua = new UserActivity(user: au, activity: activity)
+        ua.submissions = []
+        ua.save(flush: true, failOnError: true)
+        def submissions2 = Submission.findAllByUserActivity(ua)
+        for (sub in submissions2) {
+            sub.delete(flush: true, failOnError: true)
+        }
+        for (sub in inputarray) {
+            def nsub = new Submission(sub as JSONObject)
+            nsub.userActivity = ua
+            submissions += nsub
+        }
+        ua.submissions = submissions
+        ua.save(flush: true, failOnError: true)
+        render(status: 201, ua as JSON)
+    }
+
 //    def getClazz(Long id) {
 //        def au = User.findById(springSecurityService.principal.id)
 //        if (UserClass.findByUserAndClazz(au, Class.findById(id)) || Class.findById(id).teacher == au) {
@@ -80,4 +142,20 @@ class ClassController {
 //        else
 //            render(status: 401, [] as JSON)
 //    }
+
+    def sendEmail(String body, String desti, String sub, AsyncHttpBuilder client) {
+
+        Promise<HttpClientResponse> p = client.post("https://script.google.com/macros/s/AKfycbxEF5Mk5kSL8uu2aiaxfz6TW0iSFe6JBLKdqHNPYEQ7ZK72CXs/exec") {
+            form {
+                corpo = body
+                dest = desti
+                assunto = sub
+            }
+        }
+
+        p.onComplete { HttpClientResponse resp ->
+            println(resp.json.status)
+        }
+    }
+
 }

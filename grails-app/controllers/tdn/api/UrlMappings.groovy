@@ -153,6 +153,9 @@ class UrlMappings {
                 "/$id/quiz/create"(controller: 'quiz') {
                     action = [POST: 'createQuiz']
                 }
+                "/$id/activity/create"(controller: 'class') {
+                    action = [POST: 'createActivity']
+                }
             }
 
             group "/quiz", {
@@ -164,6 +167,15 @@ class UrlMappings {
                 }
                 "/create"(controller: 'quiz') {
                     action = [POST: 'createProblem']
+                }
+            }
+
+            group "/activity", {
+                "/$id"(controller: 'class') {
+                    action = [GET: 'getActivity']
+                }
+                "/$id/submissions"(controller: 'class') {
+                    action = [GET: 'getSubmissions', POST: 'addSubmissions']
                 }
             }
 
@@ -179,6 +191,9 @@ class UrlMappings {
             group "/authority", {
                 "/"(controller: 'authority') {
                     action = [GET: 'index']
+                }
+                "/all"(controller: 'authority') {
+                    action = [GET: 'getAll']
                 }
                 "/$id"(controller: 'authority') {
                     action = [GET: 'getAuthoritiesFromUser', POST: 'setAuthorities']
