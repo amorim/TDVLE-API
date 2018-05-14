@@ -71,6 +71,7 @@ class QuizController {
         Class clazz = Class.get(classId)
         if (QuizAnswer.countByStudentAndQuiz(au, quizAnswer.quiz)) {
             render(status: 999, [])
+            return
         }
         quizAnswer.student = User.get(springSecurityService.principal.id)
         quizAnswer.quiz = Quiz.get(quizId)
@@ -83,6 +84,7 @@ class QuizController {
         User au = User.get(springSecurityService.principal.id)
         if (Evaluation.countByQuizAnswer(evaluation.quizAnswer)) {
             render(status: 999, [] as JSON)
+            return
         }
         evaluation.save(flush: true, failOnError: true)
         println evaluation.quizAnswer.id
