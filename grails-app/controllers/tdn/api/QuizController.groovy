@@ -29,10 +29,14 @@ class QuizController {
         User au = User.get(springSecurityService.principal.id)
         Class clazz = Class.findById(classId)
         Quiz quiz = Quiz.findByClazzAndId(clazz, quizId)
+        def swi = ["switch": true, "quiz": quiz]
         if (UserClass.countByClazzAndUser(clazz, au)) {
-            render quiz as JSON
+            if (QuizAnswer.countByStudentAndQuiz(au, quiz)) {
+                render swi as JSON
+            } else {
+                render quiz as JSON
+            }
         } else if (clazz.teacher == au) {
-            def swi = ["switch": true, "quiz": quiz]
             render swi as JSON
         } else {
             render(status: 999, [] as JSON)

@@ -4,6 +4,7 @@ import com.tdnsecuredrest.Authority
 import com.tdnsecuredrest.User
 import com.tdnsecuredrest.UserAuthority
 import grails.converters.JSON
+import org.grails.web.json.JSONArray
 
 
 class ClassController {
@@ -24,12 +25,26 @@ class ClassController {
     def getClazz(Long id) {
         User au = User.get(springSecurityService.principal.id)
         Class cs = Class.get(id)
-        if (UserClass.countByUserAndClazz(au, cs) || cs.teacher == au) {
-            List<Quiz> quizList = Quiz.findAllByClazz(cs)
+        List<Quiz> quizList = Quiz.findAllByClazz(cs)
+        if (UserClass.countByUserAndClazz(au, cs)) {
+            JSONArray arr = new JSONArray()
+            for (ql in quizList) {
+                QuizAnswer qa = QuizAnswer.findByStudentAndQuiz(au, ql)
+                if (qa != null) {
+                    def json = JSON.parse((ql as JSON).toString())
+                    if (qa.evaluation != null) {
+                        json.put("evaluated", true)
+                        json.put("evaluation", qa.evaluation)
+                        arr.put(json)
+                    }
+                }
+            }
+            render arr as JSON
+        } else { if (cs.teacher == au) {
             render quizList as JSON
         } else {
             render(status: 401, [] as JSON)
-        }
+        } }
     }
 
     def enterClass(Class bug) {
