@@ -5,6 +5,7 @@ import com.tdnsecuredrest.User
 import com.tdnsecuredrest.UserAuthority
 import grails.async.Promise
 import grails.converters.JSON
+import org.grails.web.json.JSONArray
 import grails.http.client.AsyncHttpBuilder
 import grails.http.client.HttpClientResponse
 import net.minidev.json.JSONArray
@@ -24,15 +25,30 @@ class ClassController {
     def getClazz(Long id) {
         User au = User.get(springSecurityService.principal.id)
         Class cs = Class.get(id)
-        if (UserClass.countByUserAndClazz(au, cs) || cs.teacher == au) {
-            def quizList = Quiz.findAllByClazz(cs)
-            def activityList = ClassActivity.findAllByClazz(cs)
-            if (cs.teacher == au) {
-                for (a in activityList) {
-                    a.uri += '/teacher'
+        def quizList = Quiz.findAllByClazz(cs)
+        def activityList = ClassActivity.findAllByClazz(cs)
+        if (UserClass.countByUserAndClazz(au, cs)) {
+            JSONArray arr = new JSONArray()
+            for (ql in quizList) {
+                QuizAnswer qa = QuizAnswer.findByStudentAndQuiz(au, ql)
+                def json = JSON.parse((ql as JSON).toString())
+                if (qa != null) {
+                    if (qa.evaluation != null) {
+                        json.put("evaluated", true)
+                        json.put("evaluation", qa.evaluation)
+                    }
                 }
+                arr.put(json)
             }
-            quizList += activityList
+            def actjson = JSON.parse((activityList as JSON).toString())
+            quizList += actjson
+            render quizList as JSON
+        } else if (cs.teacher == au) {
+            for (a in activityList) {
+                a.uri += '/teacher'
+            }
+            def actjson = JSON.parse((activityList as JSON).toString())
+            quizList += actjson
             render quizList as JSON
         } else {
             render(status: 401, [] as JSON)
