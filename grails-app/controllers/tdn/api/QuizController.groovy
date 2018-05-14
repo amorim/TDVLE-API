@@ -65,6 +65,11 @@ class QuizController {
         quiz.save(flush: true, failOnError: true)
         List<User> userList = UserClass.findAllByClazz(quiz.clazz).user
         String dueDateFormated = quiz.dueDate.format("dd/MM/yyyy HH:mm")
+        for (u in userList) {
+            AsyncHttpBuilder client = new AsyncHttpBuilder()
+            sendEmail(quiz.clazz.teacher.name + ", from " + quiz.clazz.name + ", created a new quiz. Click <a href='https://casaamorim.no-ip.biz:4000/classes/"
+                    + quiz.clazz.id + "/quiz/" + quiz.id + "'>here</a> to view this quiz.", u.email, "New evaluation at TDVLE", client)
+        }
         sendNotifications(au, userList, "Created a new quiz, due: ${dueDateFormated}", new Date(), quiz)
         render(status: 201, quiz as JSON)
     }
@@ -81,11 +86,15 @@ class QuizController {
         if (quizAnswer.quiz.dueDate < new Date())
             render (status: 401, {} as JSON)
         quizAnswer.save(flush: true, failOnError: true)
+        AsyncHttpBuilder client = new AsyncHttpBuilder()
+        sendEmail(quizAnswer.student.name + ", from " + clazz.name + ", submitted an answer. Click <a href='https://casaamorim.no-ip.biz:4000/classes/"
+                + classId + "/quiz/" + quizId + "/answers'>here</a> to view his submission.", quizAnswer.student.email, "New submission at TDVLE", client)
         sendNotifications(quizAnswer.student, [clazz.teacher], "Submitted an answer", new Date(), quizAnswer.quiz)
         render(status: 201, [] as JSON)
     }
 
     def evaluateAnswer(Long classId, Long quizId, Evaluation evaluation) {
+        Class clazz = Class.get(classId)
         User au = User.get(springSecurityService.principal.id)
         if (Evaluation.countByQuizAnswer(evaluation.quizAnswer)) {
             render(status: 999, [] as JSON)
@@ -93,14 +102,15 @@ class QuizController {
         }
         evaluation.save(flush: true, failOnError: true)
         println evaluation.quizAnswer.id
+        AsyncHttpBuilder client = new AsyncHttpBuilder()
+        sendEmail(clazz.teacher.name + ", from " + clazz.name + ", evaluated your quiz: " + evaluation.grade + "%. Click <a href='https://casaamorim.no-ip.biz:4000/classes/"
+                + classId + "/quiz/" + quizId + "'>here</a> to view this evaluation.", evaluation.quizAnswer.student.email, "New evaluation at TDVLE", client)
         sendNotifications(au, [evaluation.quizAnswer.student], "Evaluated your answer: ${evaluation.grade}%", new Date(), evaluation.quizAnswer.quiz)
         render(status: 201, [] as JSON)
     }
 
     void sendNotifications(User from, List<User> list, String notifMessage, Date date, Quiz q) {
         list.each {
-            AsyncHttpBuilder client = new AsyncHttpBuilder()
-            sendEmail(q.clazz.teacher.name + ", from " + q.clazz.name + ", posted a new activity at TDVLE. Click <a href='https://casaamorim.no-ip.biz:4000/classes/" + q.clazz.id + "/quiz/" + q.id + "'>here</a> to view this activity.", it.email, "New activity at TDVLE", client)
             Notification n = new Notification(message: notifMessage, date: date,
                     read: false, destUser: it, fromUser: from, uri: '/classes/' + q.clazz.id + '/quiz/' + q.id)
             n.save(flush: true, failOnError: true)
