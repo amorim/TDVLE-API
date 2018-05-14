@@ -8,7 +8,6 @@ import grails.converters.JSON
 import org.grails.web.json.JSONArray
 import grails.http.client.AsyncHttpBuilder
 import grails.http.client.HttpClientResponse
-import net.minidev.json.JSONArray
 import org.grails.web.json.JSONObject
 
 class ClassController {
@@ -41,14 +40,13 @@ class ClassController {
                 arr.put(json)
             }
             def actjson = JSON.parse((activityList as JSON).toString())
-            quizList += actjson
-            render quizList as JSON
+            arr += actjson
+            render arr as JSON
         } else if (cs.teacher == au) {
             for (a in activityList) {
                 a.uri += '/teacher'
             }
-            def actjson = JSON.parse((activityList as JSON).toString())
-            quizList += actjson
+            quizList += activityList
             render quizList as JSON
         } else {
             render(status: 401, [] as JSON)
@@ -85,8 +83,7 @@ class ClassController {
         def count = ['']
         if (UserAuthority.findByUserAndAuthority(au, Authority.findByAuthority("ROLE_TEACHER"))) {
             count = ['classCount': Class.countByTeacher(au)]
-        }
-        else {
+        } else {
             count = ['classCount': UserClass.countByUser(au)]
         }
         render count as JSON
@@ -113,10 +110,9 @@ class ClassController {
         //linha deu um erro uma vez
         def cs = activity.clazz
         if (UserClass.countByUserAndClazz(au, cs) || cs.teacher == au) {
-            render (status: 200, activity as JSON)
-        }
-        else
-            render (status: 401, {} as JSON)
+            render(status: 200, activity as JSON)
+        } else
+            render(status: 401, {} as JSON)
     }
 
     def getSubmissions(Long id) {
@@ -126,7 +122,7 @@ class ClassController {
         def subs = []
         if (ua)
             subs = ua.submissions
-        render (status: 200, subs as JSON)
+        render(status: 200, subs as JSON)
     }
 
     def addSubmissions(Long id) {

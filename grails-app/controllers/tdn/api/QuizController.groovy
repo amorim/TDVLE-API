@@ -40,7 +40,7 @@ class QuizController {
             def swi = ["switchTeacher": true, "quiz": quiz]
             render swi as JSON
         } else {
-            render(status: 999, [] as JSON)
+            render(status: 404, [] as JSON)
         }
     }
 
