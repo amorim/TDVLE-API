@@ -75,6 +75,8 @@ class QuizController {
         }
         quizAnswer.student = User.get(springSecurityService.principal.id)
         quizAnswer.quiz = Quiz.get(quizId)
+        if (quizAnswer.quiz.dueDate < new Date())
+            render (status: 401, {} as JSON)
         quizAnswer.save(flush: true, failOnError: true)
         sendNotifications(quizAnswer.student, [clazz.teacher], "Submitted an answer", new Date(), quizAnswer.quiz)
         render(status: 201, [] as JSON)
