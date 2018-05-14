@@ -47,6 +47,7 @@ class QuizController {
     }
 
     def createQuiz(Long id) {
+        User au = User.get(springSecurityService.principal.id)
         println request.JSON
         Quiz quiz = new Quiz(request.JSON as JSONObject)
         quiz.clazz = Class.findById(id)
@@ -54,16 +55,35 @@ class QuizController {
         quiz.save(flush: true, failOnError: true)
         quiz.uri = quiz.uri + quiz.getId()
         quiz.save(flush: true, failOnError: true)
-        println quiz.problems[0].alternatives[0]
+        List<User> userList = UserClass.findAllByClazz(quiz.clazz).user
+        String dueDateFormated = quiz.dueDate.format("dd/MM/yyyy HH:mm")
+        sendNotifications(au, userList, "Created a new quiz, due: ${dueDateFormated}", new Date(), quiz)
         render(status: 201, quiz as JSON)
     }
 
     def submit(Long classId, Long quizId, QuizAnswer quizAnswer) {
-        println classId + " " + quizId + " -> " + quizAnswer
+        Class clazz = Class.get(classId)
         quizAnswer.student = User.get(springSecurityService.principal.id)
         quizAnswer.quiz = Quiz.get(quizId)
         quizAnswer.save(flush: true, failOnError: true)
-        println quizAnswer
+        sendNotifications(quizAnswer.student, [clazz.teacher], "Submitted an answer", new Date(), quizAnswer.quiz)
         render(status: 201, [] as JSON)
+    }
+
+    def evaluateAnswer(Long classId, Long quizId, Evaluation evaluation) {
+        User au = User.get(springSecurityService.principal.id)
+        println evaluation.quizAnswer.id
+        evaluation.save(flush: true, failOnError: true)
+        println evaluation.quizAnswer.id
+        sendNotifications(au, [evaluation.quizAnswer.student], "Evaluated your answer: ${evaluation.grade}%", new Date(), evaluation.quizAnswer.quiz);
+        render(status: 201, [] as JSON)
+    }
+
+    void sendNotifications(User from, List<User> list, String notifMessage, Date date, Quiz q) {
+        list.each {
+            Notification n = new Notification(message: notifMessage, date: date,
+                    read: false, destUser: it, fromUser: from, uri: '/classes/' + q.clazz.id + '/quiz/' + q.id)
+            n.save(flush: true, failOnError: true)
+        }
     }
 }

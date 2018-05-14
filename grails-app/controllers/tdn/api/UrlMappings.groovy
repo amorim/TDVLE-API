@@ -162,6 +162,9 @@ class UrlMappings {
                 "/$classId/quiz/$quizId/answers"(controller: 'quiz') {
                     action = [GET: 'getAnswers']
                 }
+                "/$classId/quiz/$quizId/answers/evaluate"(controller: 'quiz') {
+                    action = [POST: 'evaluateAnswer']
+                }
             }
 
             group "/quiz", {
