@@ -103,7 +103,7 @@ class ClassController {
         render(status: 201, activity as JSON)
         AsyncHttpBuilder client = new AsyncHttpBuilder()
         for (userclass in UserClass.findAllByClazz(activity.clazz))
-            sendEmail(activity.clazz.teacher.name + ", from " + activity.clazz.name + ", posted a new activity at TDVLE. Click <a href='https://casaamorim.no-ip.biz:4000/classes/" + activity.clazz.id + "/activity/" + activity.id + "'>here</a> to view this activity.", userclass.user.email, "New activity at TDVLE", client)
+            sendEmail(activity.clazz.teacher.name + ", from " + activity.clazz.name + ", posted a new activity at TDVLE. Click <a href='https://the-dank-network.herokuapp.com/classes/" + activity.clazz.id + "/activity/" + activity.id + "'>here</a> to view this activity.", userclass.user.email, "New activity at TDVLE", client)
     }
 
     def getActivity(Long id) {

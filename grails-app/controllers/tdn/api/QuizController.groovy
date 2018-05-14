@@ -67,7 +67,7 @@ class QuizController {
         String dueDateFormated = quiz.dueDate.format("dd/MM/yyyy HH:mm")
         for (u in userList) {
             AsyncHttpBuilder client = new AsyncHttpBuilder()
-            sendEmail(quiz.clazz.teacher.name + ", from " + quiz.clazz.name + ", created a new quiz. Click <a href='https://casaamorim.no-ip.biz:4000/classes/"
+            sendEmail(quiz.clazz.teacher.name + ", from " + quiz.clazz.name + ", created a new quiz. Click <a href='https://the-dank-network.herokuapp.com/classes/"
                     + quiz.clazz.id + "/quiz/" + quiz.id + "'>here</a> to view this quiz.", u.email, "New evaluation at TDVLE", client)
         }
         sendNotifications(au, userList, "Created a new quiz, due: ${dueDateFormated}", new Date(), quiz)
@@ -87,7 +87,7 @@ class QuizController {
             render (status: 401, {} as JSON)
         quizAnswer.save(flush: true, failOnError: true)
         AsyncHttpBuilder client = new AsyncHttpBuilder()
-        sendEmail(quizAnswer.student.name + ", from " + clazz.name + ", submitted an answer. Click <a href='https://casaamorim.no-ip.biz:4000/classes/"
+        sendEmail(quizAnswer.student.name + ", from " + clazz.name + ", submitted an answer. Click <a href='https://the-dank-network.herokuapp.com/classes/"
                 + classId + "/quiz/" + quizId + "/answers'>here</a> to view his submission.", quizAnswer.student.email, "New submission at TDVLE", client)
         sendNotifications(quizAnswer.student, [clazz.teacher], "Submitted an answer", new Date(), quizAnswer.quiz)
         render(status: 201, [] as JSON)
@@ -103,7 +103,7 @@ class QuizController {
         evaluation.save(flush: true, failOnError: true)
         println evaluation.quizAnswer.id
         AsyncHttpBuilder client = new AsyncHttpBuilder()
-        sendEmail(clazz.teacher.name + ", from " + clazz.name + ", evaluated your quiz: " + evaluation.grade + "%. Click <a href='https://casaamorim.no-ip.biz:4000/classes/"
+        sendEmail(clazz.teacher.name + ", from " + clazz.name + ", evaluated your quiz: " + evaluation.grade + "%. Click <a href='https://the-dank-network.herokuapp.com/classes/"
                 + classId + "/quiz/" + quizId + "'>here</a> to view this evaluation.", evaluation.quizAnswer.student.email, "New evaluation at TDVLE", client)
         sendNotifications(au, [evaluation.quizAnswer.student], "Evaluated your answer: ${evaluation.grade}%", new Date(), evaluation.quizAnswer.quiz)
         render(status: 201, [] as JSON)
