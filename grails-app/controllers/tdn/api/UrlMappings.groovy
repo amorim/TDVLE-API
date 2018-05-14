@@ -153,6 +153,18 @@ class UrlMappings {
                 "/$id/quiz/create"(controller: 'quiz') {
                     action = [POST: 'createQuiz']
                 }
+                "/$classId/quiz/$quizId"(controller: 'quiz') {
+                    action = [GET: 'getQuiz']
+                }
+                "/$classId/quiz/$quizId/submit"(controller: 'quiz') {
+                    action = [POST: 'submit']
+                }
+                "/$classId/quiz/$quizId/answers"(controller: 'quiz') {
+                    action = [GET: 'getAnswers']
+                }
+                "/$classId/quiz/$quizId/answers/evaluate"(controller: 'quiz') {
+                    action = [POST: 'evaluateAnswer']
+                }
                 "/$id/activity/create"(controller: 'class') {
                     action = [POST: 'createActivity']
                 }

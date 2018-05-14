@@ -3,14 +3,13 @@ package tdn.api
 class Problem {
 
     static belongsTo = [quiz: Quiz]
+    static hasMany = [alternatives: Alternative]
 
-    int kind // 0 - open, 1 - multiple
+    boolean kind // 0 - open, 1 - multiple
     String description
-    ArrayList<String> alternativeDescription
-    char answer
+    int answer
+    int problemId
 
     static constraints = {
-        answer nullable: true
-        alternativeDescription nullable: true
     }
 }
