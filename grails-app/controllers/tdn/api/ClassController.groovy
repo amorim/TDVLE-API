@@ -73,7 +73,10 @@ class ClassController {
     }
 
     def createActivity(Long id) {
+        def au = User.findById(springSecurityService.principal.id)
         def activity = new ClassActivity(request.JSON as JSONObject)
+        if (activity.clazz.teacher != au)
+            render(status: 401, {} as JSON)
         activity.clazz = Class.findById(id)
         activity.save(flush: true, failOnError: true)
         activity.uri = '/classes/' + id + '/activity/' + activity.id
