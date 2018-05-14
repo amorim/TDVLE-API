@@ -40,7 +40,9 @@ class ClassController {
                 arr.put(json)
             }
             def actjson = JSON.parse((activityList as JSON).toString())
-            arr += actjson
+            if (actjson) {
+                arr += actjson
+            }
             render arr as JSON
         } else if (cs.teacher == au) {
             for (a in activityList) {

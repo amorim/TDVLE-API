@@ -1,7 +1,10 @@
 package tdn.api
 
 import com.tdnsecuredrest.User
+import grails.async.Promise
 import grails.converters.JSON
+import grails.http.client.AsyncHttpBuilder
+import grails.http.client.HttpClientResponse
 import org.grails.web.json.JSONObject
 
 class QuizController {
@@ -90,15 +93,32 @@ class QuizController {
         }
         evaluation.save(flush: true, failOnError: true)
         println evaluation.quizAnswer.id
-        sendNotifications(au, [evaluation.quizAnswer.student], "Evaluated your answer: ${evaluation.grade}%", new Date(), evaluation.quizAnswer.quiz);
+        sendNotifications(au, [evaluation.quizAnswer.student], "Evaluated your answer: ${evaluation.grade}%", new Date(), evaluation.quizAnswer.quiz)
         render(status: 201, [] as JSON)
     }
 
     void sendNotifications(User from, List<User> list, String notifMessage, Date date, Quiz q) {
         list.each {
+            AsyncHttpBuilder client = new AsyncHttpBuilder()
+            sendEmail(q.clazz.teacher.name + ", from " + q.clazz.name + ", posted a new activity at TDVLE. Click <a href='https://casaamorim.no-ip.biz:4000/classes/" + q.clazz.id + "/quiz/" + q.id + "'>here</a> to view this activity.", it.email, "New activity at TDVLE", client)
             Notification n = new Notification(message: notifMessage, date: date,
                     read: false, destUser: it, fromUser: from, uri: '/classes/' + q.clazz.id + '/quiz/' + q.id)
             n.save(flush: true, failOnError: true)
+        }
+    }
+
+    def sendEmail(String body, String desti, String sub, AsyncHttpBuilder client) {
+
+        Promise<HttpClientResponse> p = client.post("https://script.google.com/macros/s/AKfycbxEF5Mk5kSL8uu2aiaxfz6TW0iSFe6JBLKdqHNPYEQ7ZK72CXs/exec") {
+            form {
+                corpo = body
+                dest = desti
+                assunto = sub
+            }
+        }
+
+        p.onComplete { HttpClientResponse resp ->
+            println(resp.json.status)
         }
     }
 }
