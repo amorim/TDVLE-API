@@ -189,6 +189,9 @@ class UrlMappings {
                 "/$id/submissions"(controller: 'class') {
                     action = [GET: 'getSubmissions', POST: 'addSubmissions']
                 }
+                "/$id/allSubmissions"(controller: 'class') {
+                    action = [GET: 'getAllSubmissions']
+                }
             }
 
             group "/problem" {

@@ -10,6 +10,7 @@ class UserActivity {
     static hasMany = [submissions: Submission]
 
     static constraints = {
+        user(unique: ['activity'])
         teacherEvaluation nullable: true
     }
 }

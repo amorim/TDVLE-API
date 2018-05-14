@@ -16,12 +16,9 @@ class ClassController {
 
     def getAllClasses(Long max, Long offset) {
         def au = User.findById(springSecurityService.principal.id)
-        if (UserAuthority.findByUserAndAuthority(au, Authority.findByAuthority("ROLE_TEACHER"))) {
-            render Class.findAllByTeacher(au, [max: max, offset: offset]) as JSON
-        }
-        else {
-            render UserClass.findAllByUser(au, [max: max, offset: offset]).clazz as JSON
-        }
+        def classes = Class.findAllByTeacher(au, [max: max, offset: offset])
+        classes += UserClass.findAllByUser(au, [max: max, offset: offset]).clazz
+        render classes as JSON
     }
 
     def getClazz(Long id) {
@@ -30,6 +27,11 @@ class ClassController {
         if (UserClass.countByUserAndClazz(au, cs) || cs.teacher == au) {
             def quizList = Quiz.findAllByClazz(cs)
             def activityList = ClassActivity.findAllByClazz(cs)
+            if (cs.teacher == au) {
+                for (a in activityList) {
+                    a.uri += '/teacher'
+                }
+            }
             quizList += activityList
             render quizList as JSON
         } else {
@@ -42,6 +44,8 @@ class ClassController {
         if (Class.countByClassAccessCode(classAccessCode)) {
             User au = User.get(springSecurityService.principal.id)
             Class clazz = Class.findByClassAccessCode(classAccessCode)
+            if (au == clazz.teacher)
+                render(status: 401, {} as JSON)
             UserClass userClass = new UserClass(user: au, clazz: clazz)
             userClass.save(flush: true, failOnError: true)
             render(status: 200, clazz as JSON)
@@ -75,9 +79,9 @@ class ClassController {
     def createActivity(Long id) {
         def au = User.findById(springSecurityService.principal.id)
         def activity = new ClassActivity(request.JSON as JSONObject)
+        activity.clazz = Class.findById(id)
         if (activity.clazz.teacher != au)
             render(status: 401, {} as JSON)
-        activity.clazz = Class.findById(id)
         activity.save(flush: true, failOnError: true)
         activity.uri = '/classes/' + id + '/activity/' + activity.id
         activity.save(flush: true, failOnError: true)
@@ -133,6 +137,23 @@ class ClassController {
         ua.submissions = submissions
         ua.save(flush: true, failOnError: true)
         render(status: 201, ua as JSON)
+    }
+
+    def getAllSubmissions(Long id) {
+        def au = User.findById(springSecurityService.principal.id)
+        def activit = ClassActivity.findById(id)
+        def cs = activit.clazz
+        if (au != cs.teacher)
+            render(status: 401, {} as JSON)
+        def uas = UserActivity.findAllByActivity(activit)
+        def allSubs = []
+        for (u in uas) {
+            def asubs = Submission.findAllByUserActivity(u)
+            if (asubs.size() == 0)
+                continue
+            allSubs += [submissions: asubs]
+        }
+        render allSubs as JSON
     }
 
 //    def getClazz(Long id) {
