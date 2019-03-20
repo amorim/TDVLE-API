@@ -170,6 +170,24 @@ class ClassController {
         render allSubs as JSON
     }
 
+    def getReport(Long id) {
+        def au = User.findById(springSecurityService.principal.id)
+        def clazz = Class.findById(id)
+        def students = UserClass.findAllByClazz(clazz).user
+        double totalStudents = students.size()
+        def activities = ClassActivity.findAllByClazz(clazz)
+        double med = 0
+        for (ca in activities) {
+            def count = 0
+            for (u in students)
+                count += UserActivity.countByActivityAndUser(ca, u)
+            med += count / totalStudents
+        }
+        med /= activities.size()
+        def report = ['overview': ['aggregated': ['mean': med, 'totalStudents': totalStudents]]]
+        render(report as JSON)
+    }
+
 //    def getClazz(Long id) {
 //        def au = User.findById(springSecurityService.principal.id)
 //        if (UserClass.findByUserAndClazz(au, Class.findById(id)) || Class.findById(id).teacher == au) {

@@ -147,6 +147,9 @@ class UrlMappings {
                 "/$id/submissions"(controller: 'class') {
                     action = [GET: 'getSubmissions', POST: 'submitSolution']
                 }
+                "/$id/reporte"(controller: 'class') {
+                    action = [GET: 'getReport']
+                }
                 "/$classId/submissions/$id"(controller: 'class') {
                     action = [GET: 'getSubmission', DELETE: 'deleteSubmission']
                 }
