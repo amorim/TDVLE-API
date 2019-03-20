@@ -41,7 +41,8 @@ class ClassController {
             }
             def actjson = JSON.parse((activityList as JSON).toString())
             if (actjson) {
-                arr += actjson
+                for (a in actjson)
+                    arr.put(a)
             }
             render arr as JSON
         } else if (cs.teacher == au) {
@@ -178,13 +179,14 @@ class ClassController {
         def activities = ClassActivity.findAllByClazz(clazz)
         double med = 0
         for (ca in activities) {
+            if (totalStudents == 0)
+                continue
             def count = 0
             for (u in students)
                 count += UserActivity.countByActivityAndUser(ca, u)
-            med += count / totalStudents
+            med += count
         }
-        med /= activities.size()
-        def report = ['overview': ['aggregated': ['mean': med, 'totalStudents': totalStudents]]]
+        def report = ['overview': ['aggregated': [['name': 'Completed', 'value': med],[ 'name': 'Missing', 'value': totalStudents * activities.size() - med]]]]
         render(report as JSON)
     }
 
