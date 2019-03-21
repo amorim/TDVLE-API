@@ -180,8 +180,12 @@ class ClassController {
         def activities = ClassActivity.findAllByClazz(clazz)
         def quizzes = Quiz.findAllByClazz(clazz)
         double med = 0, medquizz = 0
-        def submissionPerActivity = [], ii = 0, chartData = []
+        def submissionPerActivity = [], filesArrayPerActivity = [], ii = 0, chartData
+
         for (ca in activities) {
+            def filesArray = []
+            for (int i = 0; i < 11; i++)
+                filesArray.add(["name": i < 10 ? String.valueOf(i) : i + "+", "value": 0])
             chartData = []
             chartData.add(["name": "Delivered", "value": 0])
             chartData.add(["name": "Missing", "value": totalStudents])
@@ -190,18 +194,21 @@ class ClassController {
                 continue
             def count = 0
             for (u in students) {
+                int totalfiles = Submission.countByUserActivityAndClassActivity(UserActivity.findByActivityAndUser(ca, u), ca)
+                filesArray[Math.min(totalfiles, 10)]["value"]++
                 def haveSubmitted = UserActivity.countByActivityAndUser(ca, u)
                 count += haveSubmitted
                 submissionPerActivity[ii]["chartData"][0]["value"] += haveSubmitted
             }
             submissionPerActivity[ii]["chartData"][1]["value"] = totalStudents - submissionPerActivity[ii]["chartData"][0]["value"]
+            filesArrayPerActivity.add(["name": ca.title, "fileHistogram": filesArray])
             med += count
-            ii ++
+            ii++
         }
         def count = 0
         def gradesArray = []
         double grades = 0.0f, countGrades = 0.0f
-        for (int i = 0; i < 10; i ++) gradesArray.add(0)
+        for (int i = 0; i < 10; i++) gradesArray.add(0)
         for (q in quizzes) {
             for (u in students) {
                 count += QuizAnswer.countByQuizAndStudent(q, u)
@@ -209,12 +216,11 @@ class ClassController {
                 def e = Evaluation.findByQuizAnswer(qa)
                 if (e) {
                     println(e.grade)
-                    gradesArray[(int) Math.max(Math.ceil(e.grade / 10) - 1, 0)] ++
+                    gradesArray[(int) Math.max(Math.ceil(e.grade / 10) - 1, 0)]++
                     grades += e.grade
                     countGrades++
-                }
-                else if (q.dueDate.before(new Date())) {
-                    gradesArray[0] ++
+                } else if (q.dueDate.before(new Date())) {
+                    gradesArray[0]++
                     countGrades++ // It might  be better to not count these
                 }
 
@@ -226,29 +232,29 @@ class ClassController {
         else
             meanGrades = 0
 
-        def report = ['overview':
+        def report = ['overview'  :
                               ['aggregatedActivities': [
                                       ['name': 'Completed', 'value': med],
                                       ['name': 'Missing', 'value': totalStudents * activities.size() - med]
                               ],
-                              'aggregatedQuizzes': [
-                                      ['name': 'Answered', 'value': count],
-                                      ['name': 'Missing', 'value': totalStudents * quizzes.size() - count]
-                              ],
-                              'gradesHistogram': [
-                                      ['name': '<= 10%', 'value': gradesArray[0]],
-                                      ['name': '<= 20%', 'value': gradesArray[1]],
-                                      ['name': '<= 30%', 'value': gradesArray[2]],
-                                      ['name': '<= 40%', 'value': gradesArray[3]],
-                                      ['name': '<= 50%', 'value': gradesArray[4]],
-                                      ['name': '<= 60%', 'value': gradesArray[5]],
-                                      ['name': '<= 70%', 'value': gradesArray[6]],
-                                      ['name': '<= 80%', 'value': gradesArray[7]],
-                                      ['name': '<= 90%', 'value': gradesArray[8]],
-                                      ['name': '<= 100%', 'value': gradesArray[9]]
-                              ],
-                              'gradesMean': meanGrades],
-                'byActivity': submissionPerActivity
+                               'aggregatedQuizzes'   : [
+                                       ['name': 'Answered', 'value': count],
+                                       ['name': 'Missing', 'value': totalStudents * quizzes.size() - count]
+                               ],
+                               'gradesHistogram'     : [
+                                       ['name': '<= 10%', 'value': gradesArray[0]],
+                                       ['name': '<= 20%', 'value': gradesArray[1]],
+                                       ['name': '<= 30%', 'value': gradesArray[2]],
+                                       ['name': '<= 40%', 'value': gradesArray[3]],
+                                       ['name': '<= 50%', 'value': gradesArray[4]],
+                                       ['name': '<= 60%', 'value': gradesArray[5]],
+                                       ['name': '<= 70%', 'value': gradesArray[6]],
+                                       ['name': '<= 80%', 'value': gradesArray[7]],
+                                       ['name': '<= 90%', 'value': gradesArray[8]],
+                                       ['name': '<= 100%', 'value': gradesArray[9]]
+                               ],
+                               'gradesMean'          : meanGrades],
+                      'byActivity': ['submissions': submissionPerActivity, 'files': filesArrayPerActivity]
 
         ]
         render(report as JSON)
