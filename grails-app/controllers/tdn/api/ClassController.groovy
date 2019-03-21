@@ -192,16 +192,18 @@ class ClassController {
             submissionPerActivity.add(["name": ca.title, "chartData": chartData])
             if (totalStudents == 0)
                 continue
-            def count = 0
+            def count = 0, totfiles = 0, count2 = 0
             for (u in students) {
-                int totalfiles = Submission.countByUserActivityAndClassActivity(UserActivity.findByActivityAndUser(ca, u), ca)
+                int totalfiles = Submission.countByUserActivity(UserActivity.findByActivityAndUser(ca, u))
+                totfiles += totalfiles
+                count2++
                 filesArray[Math.min(totalfiles, 10)]["value"]++
                 def haveSubmitted = UserActivity.countByActivityAndUser(ca, u)
                 count += haveSubmitted
                 submissionPerActivity[ii]["chartData"][0]["value"] += haveSubmitted
             }
             submissionPerActivity[ii]["chartData"][1]["value"] = totalStudents - submissionPerActivity[ii]["chartData"][0]["value"]
-            filesArrayPerActivity.add(["name": ca.title, "fileHistogram": filesArray])
+            filesArrayPerActivity.add(["name": ca.title, "fileHistogram": filesArray, "mean": count2 == 0 ? 0 : totfiles/count2])
             med += count
             ii++
         }
