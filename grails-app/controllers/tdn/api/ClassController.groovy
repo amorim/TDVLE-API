@@ -5,6 +5,7 @@ import com.tdnsecuredrest.User
 import com.tdnsecuredrest.UserAuthority
 import grails.async.Promise
 import grails.converters.JSON
+import org.apache.commons.lang3.ObjectUtils
 import org.grails.web.json.JSONArray
 import grails.http.client.AsyncHttpBuilder
 import grails.http.client.HttpClientResponse
@@ -177,16 +178,79 @@ class ClassController {
         def students = UserClass.findAllByClazz(clazz).user
         double totalStudents = students.size()
         def activities = ClassActivity.findAllByClazz(clazz)
-        double med = 0
+        def quizzes = Quiz.findAllByClazz(clazz)
+        double med = 0, medquizz = 0
+        def submissionPerActivity = [], ii = 0, chartData = []
         for (ca in activities) {
+            chartData = []
+            chartData.add(["name": "Delivered", "value": 0])
+            chartData.add(["name": "Missing", "value": totalStudents])
+            submissionPerActivity.add(["name": ca.title, "chartData": chartData])
             if (totalStudents == 0)
                 continue
             def count = 0
-            for (u in students)
-                count += UserActivity.countByActivityAndUser(ca, u)
+            for (u in students) {
+                def haveSubmitted = UserActivity.countByActivityAndUser(ca, u)
+                count += haveSubmitted
+                submissionPerActivity[ii]["chartData"][0]["value"] += haveSubmitted
+            }
+            submissionPerActivity[ii]["chartData"][1]["value"] = totalStudents - submissionPerActivity[ii]["chartData"][0]["value"]
             med += count
+            ii ++
         }
-        def report = ['overview': ['aggregated': [['name': 'Completed', 'value': med],[ 'name': 'Missing', 'value': totalStudents * activities.size() - med]]]]
+        def count = 0
+        def gradesArray = []
+        double grades = 0.0f, countGrades = 0.0f
+        for (int i = 0; i < 10; i ++) gradesArray.add(0)
+        for (q in quizzes) {
+            for (u in students) {
+                count += QuizAnswer.countByQuizAndStudent(q, u)
+                def qa = QuizAnswer.findByQuizAndStudent(q, u)
+                def e = Evaluation.findByQuizAnswer(qa)
+                if (e) {
+                    println(e.grade)
+                    gradesArray[(int) Math.max(Math.ceil(e.grade / 10) - 1, 0)] ++
+                    grades += e.grade
+                    countGrades++
+                }
+                else if (q.dueDate.before(new Date())) {
+                    gradesArray[0] ++
+                    countGrades++ // It might  be better to not count these
+                }
+
+            }
+        }
+        def meanGrades
+        if (countGrades > 0)
+            meanGrades = (double) grades / (double) countGrades
+        else
+            meanGrades = 0
+
+        def report = ['overview':
+                              ['aggregatedActivities': [
+                                      ['name': 'Completed', 'value': med],
+                                      ['name': 'Missing', 'value': totalStudents * activities.size() - med]
+                              ],
+                              'aggregatedQuizzes': [
+                                      ['name': 'Answered', 'value': count],
+                                      ['name': 'Missing', 'value': totalStudents * quizzes.size() - count]
+                              ],
+                              'gradesHistogram': [
+                                      ['name': '<= 10%', 'value': gradesArray[0]],
+                                      ['name': '<= 20%', 'value': gradesArray[1]],
+                                      ['name': '<= 30%', 'value': gradesArray[2]],
+                                      ['name': '<= 40%', 'value': gradesArray[3]],
+                                      ['name': '<= 50%', 'value': gradesArray[4]],
+                                      ['name': '<= 60%', 'value': gradesArray[5]],
+                                      ['name': '<= 70%', 'value': gradesArray[6]],
+                                      ['name': '<= 80%', 'value': gradesArray[7]],
+                                      ['name': '<= 90%', 'value': gradesArray[8]],
+                                      ['name': '<= 100%', 'value': gradesArray[9]]
+                              ],
+                              'gradesMean': meanGrades],
+                'byActivity': submissionPerActivity
+
+        ]
         render(report as JSON)
     }
 

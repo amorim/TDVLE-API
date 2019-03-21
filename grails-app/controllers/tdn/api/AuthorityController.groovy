@@ -58,6 +58,8 @@ class AuthorityController {
     }
 
     def setAuthorities(Long id) {
+        if (UserAuthority.countByUserAndAuthority(User.findById(springSecurityService.principal.id), Authority.findByAuthority("ROLE_ADMIN")) == 0)
+            render(status: 401)
         User u = User.get(id)
         def json = request.JSON
         for (i in json) {
