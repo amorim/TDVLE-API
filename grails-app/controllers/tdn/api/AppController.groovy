@@ -61,6 +61,7 @@ class AppController {
         if (isAdmin(User.get(springSecurityService.principal.id))) {
             IntegratedApp.get(id).delete(flush: true)
             render(status: 200, [] as JSON)
+            return
         }
         render(status: 401, [] as JSON)
     }

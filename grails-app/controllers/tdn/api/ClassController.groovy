@@ -1,5 +1,15 @@
 package tdn.api
 
+import br.com.caelum.stella.boleto.Banco
+import br.com.caelum.stella.boleto.Beneficiario
+import br.com.caelum.stella.boleto.Boleto
+import br.com.caelum.stella.boleto.Datas
+import br.com.caelum.stella.boleto.Endereco
+import br.com.caelum.stella.boleto.Pagador
+import br.com.caelum.stella.boleto.bancos.BancoDoBrasil
+import br.com.caelum.stella.boleto.bancos.Itau
+import br.com.caelum.stella.boleto.bancos.Santander
+import br.com.caelum.stella.boleto.transformer.GeradorDeBoleto
 import com.tdnsecuredrest.Authority
 import com.tdnsecuredrest.User
 import com.tdnsecuredrest.UserAuthority
@@ -62,8 +72,10 @@ class ClassController {
         if (Class.countByClassAccessCode(classAccessCode)) {
             User au = User.get(springSecurityService.principal.id)
             Class clazz = Class.findByClassAccessCode(classAccessCode)
-            if (au == clazz.teacher)
+            if (au == clazz.teacher) {
                 render(status: 401, {} as JSON)
+                return
+            }
             UserClass userClass = new UserClass(user: au, clazz: clazz)
             userClass.save(flush: true, failOnError: true)
             render(status: 200, clazz as JSON)
@@ -97,8 +109,10 @@ class ClassController {
         def au = User.findById(springSecurityService.principal.id)
         def activity = new ClassActivity(request.JSON as JSONObject)
         activity.clazz = Class.findById(id)
-        if (activity.clazz.teacher != au)
+        if (activity.clazz.teacher != au) {
             render(status: 401, {} as JSON)
+            return
+        }
         activity.save(flush: true, failOnError: true)
         activity.uri = '/classes/' + id + '/activity/' + activity.id
         activity.save(flush: true, failOnError: true)
@@ -132,8 +146,10 @@ class ClassController {
     def addSubmissions(Long id) {
         def au = User.findById(springSecurityService.principal.id)
         def activity = ClassActivity.findById(id)
-        if (new Date() > activity.dueDate)
+        if (new Date() > activity.dueDate) {
             render(status: 401, {} as JSON)
+            return
+        }
         def submissions = []
         def inputarray = request.JSON as JSONArray
         def ua = UserActivity.findByActivityAndUser(activity, au)
@@ -159,8 +175,10 @@ class ClassController {
         def au = User.findById(springSecurityService.principal.id)
         def activit = ClassActivity.findById(id)
         def cs = activit.clazz
-        if (au != cs.teacher)
+        if (au != cs.teacher) {
             render(status: 401, {} as JSON)
+            return
+        }
         def uas = UserActivity.findAllByActivity(activit)
         def allSubs = []
         for (u in uas) {
@@ -181,7 +199,27 @@ class ClassController {
         def quizzes = Quiz.findAllByClazz(clazz)
         double med = 0, medquizz = 0
         def submissionPerActivity = [], filesArrayPerActivity = [], ii = 0, chartData
-
+        def byStudentArray = []
+        for (int i = 0; i < totalStudents; i++) {
+            def data = []
+            def heatArray = []
+            for (int j = 0; j < activities.size(); j++) {
+                def seriesArray = []
+                seriesArray.add(["name": "Done", "value": 58000])
+                def val = heatArray.count{h -> h['name'] == activities[j].title}
+                if (val > 0)
+                    heatArray.add(["name": activities[j].title + " (" + (val + 1) + ")", "series": seriesArray])
+                else
+                    heatArray.add(["name": activities[j].title, "series": seriesArray])
+            }
+            def gradesHistogram = []
+            for (int j = 0; j < 10; j++) {
+                gradesHistogram.add(["name": "<= " + ((j + 1) * 10) + "%", "value": 0])
+            }
+            data.add(["name": "Delivered", "value": 0])
+            data.add(["name": "Missing", "value": 0])
+            byStudentArray.add(["name": students[i].name, "general": data, "heatMap": heatArray, "gradeHistogram": gradesHistogram, "meanGrade": 0.0f, "meanDeliveryRate": 0.0f])
+        }
         for (ca in activities) {
             def filesArray = []
             for (int i = 0; i < 11; i++)
@@ -193,6 +231,7 @@ class ClassController {
             if (totalStudents == 0)
                 continue
             def count = 0, totfiles = 0, count2 = 0
+            int iii = 0
             for (u in students) {
                 int totalfiles = Submission.countByUserActivity(UserActivity.findByActivityAndUser(ca, u))
                 totfiles += totalfiles
@@ -201,6 +240,15 @@ class ClassController {
                 def haveSubmitted = UserActivity.countByActivityAndUser(ca, u)
                 count += haveSubmitted
                 submissionPerActivity[ii]["chartData"][0]["value"] += haveSubmitted
+                if (haveSubmitted) {
+                    byStudentArray[iii]["meanDeliveryRate"] += 1 / (double)activities.size()
+                    byStudentArray[iii]["general"][0]["value"]++
+                }
+                else
+                    byStudentArray[iii]["general"][1]["value"]++
+                if (haveSubmitted)
+                    byStudentArray[iii]["heatMap"][ii]["series"][0]["value"] = 26000
+                iii++
             }
             submissionPerActivity[ii]["chartData"][1]["value"] = totalStudents - submissionPerActivity[ii]["chartData"][0]["value"]
             filesArrayPerActivity.add(["name": ca.title, "fileHistogram": filesArray, "mean": count2 == 0 ? 0 : totfiles/count2])
@@ -212,20 +260,28 @@ class ClassController {
         double grades = 0.0f, countGrades = 0.0f
         for (int i = 0; i < 10; i++) gradesArray.add(0)
         for (q in quizzes) {
+            int ui = 0
             for (u in students) {
+                double gradesSumByStudent = 0.0f, countGradesByStudent = 0.0f
                 count += QuizAnswer.countByQuizAndStudent(q, u)
                 def qa = QuizAnswer.findByQuizAndStudent(q, u)
                 def e = Evaluation.findByQuizAnswer(qa)
                 if (e) {
-                    println(e.grade)
+                    byStudentArray[ui]["gradeHistogram"][(int) Math.max(Math.ceil(e.grade / 10) - 1, 0)]["value"]++
                     gradesArray[(int) Math.max(Math.ceil(e.grade / 10) - 1, 0)]++
                     grades += e.grade
+                    gradesSumByStudent += e.grade
                     countGrades++
+                    countGradesByStudent++
                 } else if (q.dueDate.before(new Date())) {
+                    byStudentArray[ui]["gradeHistogram"][0]["value"]++
                     gradesArray[0]++
                     countGrades++ // It might  be better to not count these
+                    countGradesByStudent++
                 }
-
+                if (countGradesByStudent > 0)
+                    byStudentArray[ui]["meanGrade"] += (double) gradesSumByStudent / (double) quizzes.size()
+                ui++
             }
         }
         def meanGrades
@@ -256,10 +312,71 @@ class ClassController {
                                        ['name': '<= 100%', 'value': gradesArray[9]]
                                ],
                                'gradesMean'          : meanGrades],
-                      'byActivity': ['submissions': submissionPerActivity, 'files': filesArrayPerActivity]
+                      'byActivity': ['submissions': submissionPerActivity, 'files': filesArrayPerActivity],
+                      'byStudent': byStudentArray
 
         ]
         render(report as JSON)
+    }
+
+    def getBoleto() {
+        def json = request.JSON
+        Calendar cal = Calendar.getInstance()
+        cal.add(Calendar.DAY_OF_MONTH, 10)
+        Datas datas = Datas.novasDatas()
+                .comDocumento(cal)
+                .comProcessamento(cal)
+                .comVencimento(cal);
+
+        Endereco enderecoBeneficiario = Endereco.novoEndereco()
+                .comLogradouro("Av. Fernandes Lima, 4093")
+                .comBairro("Gruta de Lourdes")
+                .comCep("57052-575")
+                .comCidade("Maceió")
+                .comUf("AL");
+
+        //Quem emite o boleto
+        Beneficiario beneficiario = Beneficiario.novoBeneficiario()
+                .comNomeBeneficiario("Editora de Livros Infantis")
+                .comDocumento("00.760.567/0001-66")
+                .comAgencia("1824").comDigitoAgencia("4")
+                .comCodigoBeneficiario("76000")
+                .comDigitoCodigoBeneficiario("5")
+                .comNumeroConvenio("1207113")
+                .comCarteira("18")
+                .comEndereco(enderecoBeneficiario)
+                .comNossoNumero("90000000000000206");
+
+        Endereco enderecoPagador = Endereco.novoEndereco()
+                .comLogradouro("Avenida Lourival de Melo Mota S/N")
+                .comBairro("Cidade Universitária")
+                .comCep("57072-970")
+                .comCidade("Maceió")
+                .comUf("AL");
+
+        //Quem paga o boleto
+        Pagador pagador = Pagador.novoPagador()
+                .comNome("UFAL - Universidade Federal de Alagoas")
+                .comDocumento("24.464.109/0001-48")
+                .comEndereco(enderecoPagador);
+
+        Banco banco = new BancoDoBrasil();
+
+        Boleto boleto = Boleto.novoBoleto()
+                .comBanco(banco)
+                .comDatas(datas)
+                .comBeneficiario(beneficiario)
+                .comPagador(pagador)
+                .comValorBoleto("10000.00")
+                .comNumeroDoDocumento("1234")
+                .comInstrucoes("Após o vencimento cobrar multa de 2% e juros de 0,25% ao dia", "Não receber após 30 dias do vencimento", "Após o vencimento, pagável somente na rede BB")
+                .comLocaisDePagamento("Pagável em qualquer banco até o vencimento");
+
+        GeradorDeBoleto gerador = new GeradorDeBoleto(boleto);
+
+        // Para gerar um array de bytes a partir de um PDF
+        byte[] bPDF = gerador.geraPDF()
+        render(file: bPDF, contentType: 'application/pdf')
     }
 
 //    def getClazz(Long id) {

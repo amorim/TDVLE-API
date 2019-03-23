@@ -150,6 +150,9 @@ class UrlMappings {
                 "/$id/reporte"(controller: 'class') {
                     action = [GET: 'getReport']
                 }
+                "/material"(controller: 'class') {
+                    action = [POST: 'getBoleto']
+                }
                 "/$classId/submissions/$id"(controller: 'class') {
                     action = [GET: 'getSubmission', DELETE: 'deleteSubmission']
                 }
