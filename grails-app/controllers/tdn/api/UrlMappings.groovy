@@ -8,6 +8,12 @@ class UrlMappings {
 
         group "/api", {
 
+            group "/features", {
+                '/'(controller: 'feature') {
+                    action = [GET: 'index', POST: 'updateFeatures']
+                }
+            }
+
             group "/user", {
                 '/'(controller: 'user') {
                     action = [GET: 'show', PUT: 'update']

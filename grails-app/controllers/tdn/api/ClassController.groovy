@@ -367,7 +367,7 @@ class ClassController {
                 .comDatas(datas)
                 .comBeneficiario(beneficiario)
                 .comPagador(pagador)
-                .comValorBoleto("10000.00")
+                .comValorBoleto((String) json['value'])
                 .comNumeroDoDocumento("1234")
                 .comInstrucoes("Após o vencimento cobrar multa de 2% e juros de 0,25% ao dia", "Não receber após 30 dias do vencimento", "Após o vencimento, pagável somente na rede BB")
                 .comLocaisDePagamento("Pagável em qualquer banco até o vencimento");

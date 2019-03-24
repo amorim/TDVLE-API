@@ -25,6 +25,11 @@ class BootStrap {
             UserAuthority.create(user1, Authority.findByAuthority('ROLE_USER'))
             UserAuthority.create(user1, Authority.findByAuthority('ROLE_TEACHER'))
         }
+        if (Features.findAll().size() == 0) {
+            Features f = new Features()
+            f.featuresJson = "[{\"children\":[{\"displayName\":\"PayPal\",\"enabled\":true},{\"displayName\":\"Boleto\",\"enabled\":true}],\"displayName\":\"Payment Methods\"},{\"children\":[{\"displayName\":\"Text\",\"enabled\":true},{\"displayName\":\"Charts\",\"enabled\":true}],\"displayName\":\"Report Features\"},{\"children\":[{\"displayName\":\"Forum\",\"enabled\":true},{\"displayName\":\"Embedded Social Network\",\"enabled\":true}],\"displayName\":\"Social Platform Features\"},{\"children\":[{\"displayName\":\"Quizzes\",\"enabled\":true},{\"displayName\":\"Activities\",\"enabled\":true}],\"displayName\":\"Class Assignments\"}]"
+            f.save(flush: true, failOnError: true)
+        }
         JSON.registerObjectMarshaller(User) {
             def output = [:]
             output['id'] = it.id

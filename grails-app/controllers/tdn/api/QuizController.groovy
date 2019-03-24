@@ -56,7 +56,6 @@ class QuizController {
 
     def createQuiz(Long id) {
         User au = User.get(springSecurityService.principal.id)
-        println request.JSON
         Quiz quiz = new Quiz(request.JSON as JSONObject)
         quiz.clazz = Class.findById(id)
         quiz.uri = "/classes/" + quiz.clazz.id + "/quiz/"
