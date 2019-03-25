@@ -233,7 +233,12 @@ class ClassController {
             def count = 0, totfiles = 0, count2 = 0
             int iii = 0
             for (u in students) {
-                int totalfiles = Submission.countByUserActivity(UserActivity.findByActivityAndUser(ca, u))
+                def totalfiles = 0;
+                def submisssions = Submission.findByUserActivity(UserActivity.findByActivityAndUser(ca, u))
+                for (s in submisssions) {
+                    if (submisssions.userActivity != null)
+                        totalfiles++;
+                }
                 totfiles += totalfiles
                 count2++
                 filesArray[Math.min(totalfiles, 10)]["value"]++
